@@ -19,7 +19,7 @@ void Int2Bin(int num, char* result)
 
 	for(j = 0; j < i; ++j)
 	{
-		result[j] = bin_num[i - j - 1] + 48;			
+		result[j] = bin_num[i - j - 1] + '0';			
 	}
 	
 	result[j] = '\0';	
