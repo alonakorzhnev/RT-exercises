@@ -5,7 +5,7 @@ int main()
 {
 	int cont = 1, number;		
 	unsigned int option;
-    char s1[32], s2[32];
+    	char s1[32], s2[32];
 	
 	while (cont) {
 		printf("Choose option:\n");
