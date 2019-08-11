@@ -30,7 +30,7 @@ void Int2Bin(int num, char* result)
 void Bin2Int(char* string)
 {
 	int num = atoi(string);
-	int result = 0, base = 1,last_digit;
+	int result = 0, base = 1, last_digit;
 
 	if(string == NULL)
 	{
