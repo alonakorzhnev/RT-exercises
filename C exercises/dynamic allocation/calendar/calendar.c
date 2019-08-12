@@ -139,9 +139,20 @@ int removeMeeting(Calendar_t* c, float begin)
 	
 }
 
-Meeting_t* findMeeting(Calendar_t* calendar, float begin)
+Meeting_t* findMeeting(Calendar_t* calendar)
 {
+	int i;
+	float begin;
 	
+	for(i = 0; i < calendar->index; ++i)
+	{
+		if(calendar->meetings[i]->begin == begin)
+		{
+			return calendar->meetings[i];
+		}
+	}
+	
+	return NULL;
 }
 
 void destroyAD(Calendar_t* calendar)

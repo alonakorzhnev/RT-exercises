@@ -24,7 +24,7 @@ int insertMeeting(Calendar_t* c, Meeting_t* m);
 
 int removeMeeting(Calendar_t* c, float begin);
 
-Meeting_t* findMeeting(Calendar_t* c, float begin);
+Meeting_t* findMeeting(Calendar_t* c);
 
 void destroyAD(Calendar_t* c);
 
