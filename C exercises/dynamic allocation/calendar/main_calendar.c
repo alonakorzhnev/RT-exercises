@@ -35,6 +35,15 @@ int main()
 			case 1:				
 				meeting = createMeeting();
 				
+				if(meeting == NULL)
+				{
+					break;
+				}
+				else
+				{
+					printf("\nNew meeting has been created.\n\n");
+				}
+				
 				flag_success = insertMeeting(calendar, meeting);
 				
 				if(flag_success == 0)
@@ -53,11 +62,11 @@ int main()
 				
 				if(flag_success == 0)
 				{
-					printf("Meeting successfully removed.\n\n");
+					printf("\nMeeting successfully removed.\n\n");
 				}
 				else
 				{
-					printf("There is no such meeting.\n\n");
+					printf("\nThere is no such meeting.\n\n");
 				}
 				
 				break;
@@ -67,13 +76,13 @@ int main()
 				
 				if(meeting != NULL)
 				{
-					printf("Meeting is found.\n");
+					printf("\nMeeting is found.\n");
 					printMeeting(meeting);
 					printf("\n");
 				}
 				else
 				{
-					printf("Meeting is not found.\n\n");
+					printf("\nMeeting is not found.\n\n");
 				}
 				
 				break;

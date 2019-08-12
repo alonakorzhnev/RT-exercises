@@ -61,7 +61,6 @@ Meeting_t* createMeeting()
 	meeting->end = end;
 	meeting->room = room;	
 	
-	printf("New meeting has been created.\n\n");
 	return meeting;
 }
 
@@ -70,7 +69,7 @@ int insertMeeting(Calendar_t* calendar, Meeting_t* meeting)
 	Meeting_t** temp;
 	int i, insert_index = -1;
 	
-	if(calendar == NULL || meeting == NULL || calendar->meetings)
+	if(calendar == NULL || meeting == NULL)
 	{
 		return -1;
 	}	
@@ -98,14 +97,14 @@ int insertMeeting(Calendar_t* calendar, Meeting_t* meeting)
 		}
 	}
 	
-	if(insert_index == -1)
+	if(insert_index == -1) /*meetings overlap*/
 	{
 		printf("Meetings overlap! Please choose another time.\n\n");
 		free(meeting);
 		return -1;
 	}
 	
-	if(calendar->index == calendar->capacity)
+	if(calendar->index == calendar->capacity) /*memory allocation*/
 	{
 		temp = calendar->meetings;
 		calendar->meetings = (Meeting_t**)realloc(calendar->meetings, (calendar->capacity*2)*sizeof(Meeting_t*));
@@ -144,7 +143,7 @@ int removeMeeting(Calendar_t* calendar)
 	printf("Enter begin time: ");
 	scanf("%f", &begin);
 	
-	for(i = 0; i < calendar->index; ++i)
+	for(i = 0; i < calendar->index; ++i) /*find index of meeting*/
 	{
 		if(calendar->meetings[i]->begin == begin)
 		{
@@ -153,12 +152,12 @@ int removeMeeting(Calendar_t* calendar)
 		}
 	}
 	
-	if(index_remove == -1)
+	if(index_remove == -1) /*meeting not found*/
 	{		
 		return -1;
 	}
 	
-	free(calendar->meetings[index_remove]);
+	free(calendar->meetings[index_remove]); /*remove meeting*/
 	
 	for(i = index_remove; i < calendar->index - 1; ++i) /*shift left*/
 	{
@@ -211,7 +210,7 @@ void printAD(Calendar_t* calendar)
 {
 	int i;
 	
-	if(calendar == NULL || calendar->meetings == NULL)
+	if(calendar == NULL)
 	{
 		return;
 	}
@@ -219,12 +218,7 @@ void printAD(Calendar_t* calendar)
 	printf("My calendar: \n\n");
 	
 	for(i = 0; i < calendar->index; ++i)
-	{
-		if(calendar->meetings[i] == NULL)
-		{
-			return;
-		}
-		
+	{	
 		printMeeting(calendar->meetings[i]);
 		printf("\n");
 	}
