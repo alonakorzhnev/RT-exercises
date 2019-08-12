@@ -23,7 +23,7 @@ Calendar_t* createAD(int capacity)
 	calendar->capacity = capacity;
 	calendar->index = 0;
 	
-	printf("Calendar has been created\n\n");
+	printf("Calendar has been created.\n\n");
 	return calendar;
 }
 
@@ -41,8 +41,7 @@ Meeting_t* createMeeting()
 	}
 	
 	while(1)
-	{
-		printf("Please enter meeting data\n");
+	{		
 		printf("Enter begin time: ");
 		scanf("%f", &begin);
 		printf("Enter eng time: ");
@@ -53,14 +52,16 @@ Meeting_t* createMeeting()
 		if(begin > 0 && begin < 24 && end > 0 && end < 24 && begin < end && room > 0)
 		{
 			break;
-		}		
+		}
+		
+		printf("Error! Please reenter meeting data.\n");
 	}
 	
 	meeting->begin = begin;
 	meeting->end = end;
 	meeting->room = room;	
 	
-	printf("New meeting has been created\n\n");
+	printf("New meeting has been created.\n\n");
 	return meeting;
 }
 
@@ -69,7 +70,7 @@ int insertMeeting(Calendar_t* calendar, Meeting_t* meeting)
 	Meeting_t** temp;
 	int i, insert_index = -1;
 	
-	if(calendar == NULL || meeting == NULL)
+	if(calendar == NULL || meeting == NULL || calendar->meetings)
 	{
 		return -1;
 	}	
@@ -99,8 +100,8 @@ int insertMeeting(Calendar_t* calendar, Meeting_t* meeting)
 	
 	if(insert_index == -1)
 	{
-		printf("Meetings overlap!\n\n");
-		free(meeting); /*or in main*/
+		printf("Meetings overlap! Please choose another time.\n\n");
+		free(meeting);
 		return -1;
 	}
 	
@@ -116,11 +117,11 @@ int insertMeeting(Calendar_t* calendar, Meeting_t* meeting)
 			return -1;
 		}
 		
-		printf("Memory allocation\n\n");
+		printf("Memory allocation.\n");
 		(calendar->capacity) *= 2;
 	}
 
-	if(insert_index != calendar->index)
+	if(insert_index != calendar->index) /*shift right*/
 	{
 		for(i = calendar->index; i > insert_index; --i)
 		{
@@ -134,15 +135,48 @@ int insertMeeting(Calendar_t* calendar, Meeting_t* meeting)
 	return 0;
 }
 
-int removeMeeting(Calendar_t* c, float begin)
+int removeMeeting(Calendar_t* calendar)
 {
+	int i, index_remove = -1;
+	float begin;
+	Meeting_t* temp;
 	
+	printf("Enter begin time: ");
+	scanf("%f", &begin);
+	
+	for(i = 0; i < calendar->index; ++i)
+	{
+		if(calendar->meetings[i]->begin == begin)
+		{
+			index_remove = i;
+			break;
+		}
+	}
+	
+	if(index_remove == -1)
+	{		
+		return -1;
+	}
+	
+	free(calendar->meetings[index_remove]);
+	
+	for(i = index_remove; i < calendar->index - 1; ++i) /*shift left*/
+	{
+		calendar->meetings[i] = calendar->meetings[i + 1];
+	}
+	
+	(calendar->index)--;
+	
+	return 0;
 }
 
 Meeting_t* findMeeting(Calendar_t* calendar)
 {
 	int i;
 	float begin;
+	
+	printf("Enter begin time: ");
+	scanf("%f", &begin);
 	
 	for(i = 0; i < calendar->index; ++i)
 	{
@@ -157,7 +191,20 @@ Meeting_t* findMeeting(Calendar_t* calendar)
 
 void destroyAD(Calendar_t* calendar)
 {
+	int i;
 	
+	if(calendar == NULL || calendar->meetings == NULL)
+	{
+		return;
+	}
+	
+	for(i = 0; i < calendar->index; ++i)
+	{
+		free(calendar->meetings[i]);
+	}
+	
+	free(calendar->meetings);
+	free(calendar);
 }
 
 void printAD(Calendar_t* calendar)
@@ -169,7 +216,7 @@ void printAD(Calendar_t* calendar)
 		return;
 	}
 	
-	printf("My calendar: \n");
+	printf("My calendar: \n\n");
 	
 	for(i = 0; i < calendar->index; ++i)
 	{
@@ -179,14 +226,13 @@ void printAD(Calendar_t* calendar)
 		}
 		
 		printMeeting(calendar->meetings[i]);
+		printf("\n");
 	}
-	
-	printf("\n");
 }
 
 void printMeeting(Meeting_t* meeting)
 {
-	printf("Begin: %f\n", meeting->begin);
-	printf("End: %f\n", meeting->end);
+	printf("Begin: %.2f\n", meeting->begin);
+	printf("End: %.2f\n", meeting->end);
 	printf("Room: %d\n", meeting->room);
 }

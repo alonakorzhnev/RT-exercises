@@ -20,16 +20,16 @@ Calendar_t* createAD(int capacity);
 
 Meeting_t* createMeeting();
 
-int insertMeeting(Calendar_t* c, Meeting_t* m);
+int insertMeeting(Calendar_t* calendar, Meeting_t* meeting);
 
-int removeMeeting(Calendar_t* c, float begin);
+int removeMeeting(Calendar_t* calendar);
 
-Meeting_t* findMeeting(Calendar_t* c);
+Meeting_t* findMeeting(Calendar_t* calendar);
 
-void destroyAD(Calendar_t* c);
+void destroyAD(Calendar_t* calendar);
 
-void printAD(Calendar_t* c);
+void printAD(Calendar_t* calendar);
 
-void printMeeting(Meeting_t* m);
+void printMeeting(Meeting_t* meeting);
 
 #endif

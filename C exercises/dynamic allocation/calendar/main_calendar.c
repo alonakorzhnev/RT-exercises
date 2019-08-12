@@ -6,8 +6,7 @@ int main()
 {	
 	unsigned int option;
 	int cont = 1, capacity;
-	Calendar_t* calendar;
-	
+	Calendar_t* calendar;	
 	Meeting_t* meeting;
 	int flag_success = 0;
 	
@@ -38,19 +37,49 @@ int main()
 				
 				flag_success = insertMeeting(calendar, meeting);
 				
+				if(flag_success == 0)
+				{
+					printf("Meeting successfully inserted.\n\n");
+				}
+				else
+				{
+					printf("Meeting insertion failed.\n\n");
+				}
+				
 				break;
 			
 			case 2:
+				flag_success = removeMeeting(calendar);
+				
+				if(flag_success == 0)
+				{
+					printf("Meeting successfully removed.\n\n");
+				}
+				else
+				{
+					printf("There is no such meeting.\n\n");
+				}
 				
 				break;
 				
 			case 3:
+				meeting = findMeeting(calendar);
+				
+				if(meeting != NULL)
+				{
+					printf("Meeting is found.\n");
+					printMeeting(meeting);
+					printf("\n");
+				}
+				else
+				{
+					printf("Meeting is not found.\n\n");
+				}
 				
 				break;
 				
 			case 4:
-				printAD(calendar);
-				
+				printAD(calendar);				
 				break;
 				
 			default:
@@ -59,6 +88,7 @@ int main()
 		}
 	}
 	
-
+	destroyAD(calendar);
+	
 	return 0;
 }
