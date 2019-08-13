@@ -3,16 +3,12 @@
 #include <string.h>
 #include "hw_files.h"
 
-#define SIZE 256
-
 int last(char* fileName, int n)
 {
 	FILE* fp;
 	char str[512];
 	int* array;
-	char* c;
 	int i = 0;
-	long int pos = 0;
 	
 	if((fp = fopen(fileName, "r")) == NULL)
 	{
@@ -30,17 +26,18 @@ int last(char* fileName, int n)
 	array[i] = 0;
 	
 	while(fgets(str, 512, fp) != NULL)
-	{		
-		i++;
-		i = i%n;
-		printf("i = %d ", i);
-		array[i] = ftell(fp);
-		printf("%d\n", array[i]);		
+	{
+        if(fgetc(fp) != EOF)
+        {
+		    i = (i + 1)%n;
+		    array[i] = ftell(fp) - 1;	
+        }				
 	}
 	
-	fseek(fp, array[(i+1)%n], SEEK_SET);
+	fseek(fp, array[(i + 1)%n], SEEK_SET);
 	
-	while ( fgets(str, 512, fp) != NULL ) {
+	while(fgets(str, 512, fp) != NULL) 
+    {
 		printf("%s", str);
 	}
 	
@@ -50,6 +47,8 @@ int last(char* fileName, int n)
 	}
 	
 	free(array);
+
+    return 0;
 }
 
 int countLetters(char* fileName)
@@ -83,7 +82,11 @@ int countLetters(char* fileName)
 		printf("%c: %d\n", letter + 'a', alefbet[letter]);
     }
 
-    fclose(fp);
+    if(fclose(fp) != 0)
+	{
+		return -1;
+	}
+
     return 0;	
 }
 
