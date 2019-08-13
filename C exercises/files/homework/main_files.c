@@ -14,7 +14,6 @@ int main()
 		printf("1: Line function\n");
 		printf("2: \n");
 		printf("3: \n");
-		printf("4: \n");
 		printf("Any another number - stop\n");
 		
 		scanf("%x", &option);
@@ -30,13 +29,20 @@ int main()
 				
 				break;
 				
-			case 2:
+			case 2:				
+				printf("Enter name of file: \n");
+				scanf("%s", fileName);
+				
+				result = countLetters(fileName);
+				
 				break;
 				
 			case 3:
-				break;
+				printf("Enter name of file: \n");
+				scanf("%s", fileName);
 				
-			case 4:
+				result = countWords(fileName);
+				
 				break;
 				
 			default:

@@ -3,14 +3,16 @@
 #include <string.h>
 #include "hw_files.h"
 
+#define SIZE 256
+
 int last(char* fileName, int n)
 {
 	FILE* fp;
 	char str[512];
 	int* array;
 	char* c;
-	int offset = 0, i = 0;
-	long int pos;
+	int i = 0;
+	long int pos = 0;
 	
 	if((fp = fopen(fileName, "r")) == NULL)
 	{
@@ -25,20 +27,22 @@ int last(char* fileName, int n)
 		return -1;
 	}
 	
-	array[i] = offset;
+	array[i] = 0;
 	
-	do{
-	
-		c = fgets(str, 512, fp);
-		offset += ftell(fp);
+	while(fgets(str, 512, fp) != NULL)
+	{		
+		i++;
 		i = i%n;
-		array[i] = offset;
-		i++;	
-		
-	}while(c != NULL);
+		printf("i = %d ", i);
+		array[i] = ftell(fp);
+		printf("%d\n", array[i]);		
+	}
 	
-	pos = ftell(fp);
+	fseek(fp, array[(i+1)%n], SEEK_SET);
 	
+	while ( fgets(str, 512, fp) != NULL ) {
+		printf("%s", str);
+	}
 	
 	if(fclose(fp) != 0)
 	{
@@ -48,3 +52,43 @@ int last(char* fileName, int n)
 	free(array);
 }
 
+int countLetters(char* fileName)
+{
+	FILE* fp;
+	int alefbet[27] = {0};
+	int letter;
+	
+	if((fp = fopen(fileName, "r")) == NULL)
+	{
+		printf("Cannot open file\n");
+		return -1;
+	}
+	
+	while((letter = fgetc(fp)) != EOF)
+	{
+        if(letter >= 'a' && letter <= 'z')
+		{
+            letter -= 'a'; 
+            alefbet[letter]++;
+        }
+        else if(letter >= 'A' && letter <= 'Z')
+		{
+            letter -= 'A';
+            alefbet[letter]++;
+        }
+    }
+	
+	for(letter = 0; letter < 26; letter++)
+	{
+		printf("%c: %d\n", letter + 'a', alefbet[letter]);
+    }
+
+    fclose(fp);
+    return 0;	
+}
+
+int countWords(char* fileName)
+{
+		
+
+}
