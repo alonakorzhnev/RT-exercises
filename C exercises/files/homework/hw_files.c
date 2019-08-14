@@ -92,6 +92,44 @@ int countLetters(char* fileName)
 
 int countWords(char* fileName)
 {
+	FILE* fp;
+	word* words_array;
+	int isUnique, i, index = 0;
+	char buffer[32];
+	
+	if((fp = fopen(fileName, "r")) == NULL)
+	{
+		printf("Cannot open file\n");
+		return -1;
+	}
+	
+	words_array = (word*)malloc(10*sizeof(word));
+	
+	while(fscanf(fp, "%s", buffer) != EOF)
+	{
+		isUnique = 1;
+		for(i = 0; i < index && isUnique; ++i)
+		{
+			if(strcmp(words_array[i].word, buffer) == 0)
+			{
+				isUnique = 0;
+			}
+		}
 		
+		if(isUnique)
+		{
+			strcopy(words_array[index].word, buffer);
+			words_array[index].count++;
+			index++;
+		}
+	}
+	
+	
+	
+	if(fclose(fp) != 0)
+	{
+		return -1;
+	}
 
+    return 0;
 }
