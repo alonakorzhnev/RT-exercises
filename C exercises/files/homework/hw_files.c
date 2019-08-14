@@ -54,7 +54,7 @@ int last(char* fileName, int n)
 int countLetters(char* fileName)
 {
 	FILE* fp;
-	int alefbet[27] = {0};
+	int alefbet[26] = {0};
 	int letter;
 	
 	if((fp = fopen(fileName, "r")) == NULL)
@@ -118,13 +118,15 @@ int countWords(char* fileName)
 		
 		if(isUnique)
 		{
-			strcopy(words_array[index].word, buffer);
+			strcpy(words_array[index].word, buffer);
 			words_array[index].count++;
 			index++;
 		}
-	}
-	
-	
+		else
+		{
+			words_array[index - 1].count++;
+		}
+	}	
 	
 	if(fclose(fp) != 0)
 	{

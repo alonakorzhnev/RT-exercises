@@ -12,8 +12,8 @@ int main()
 	{
 		printf("Choose option:\n");
 		printf("1: Line function\n");
-		printf("2: \n");
-		printf("3: \n");
+		printf("2: Count letters\n");
+		printf("3: Count words\n");
 		printf("Any another number - stop\n");
 		
 		scanf("%x", &option);
