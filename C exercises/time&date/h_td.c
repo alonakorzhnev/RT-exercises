@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "h_td.h"
 
-static int daysArr[12] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; 
+static const int daysArr[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}; 
 static char* monthsArr[12] = {
         "January",
         "February",
@@ -18,7 +18,12 @@ static char* monthsArr[12] = {
 
 int setTime(cTime_t* time, int hour, int min, int sec)
 {
-	if(hour < 0 && hour >23 || min < 0 && min > 59 || sec < 0 && sec > 59)
+	if(time == NULL)
+	{
+		return -1;
+	}
+	
+	if(hour < 0 || hour >23 || min < 0 || min > 59 || sec < 0 || sec > 59)
 	{
 		return -1;
 	}
@@ -34,6 +39,11 @@ void printTime(cTime_t* time, int format)
 {
 	char* meridien;
 	int hour;
+	
+	if(time == NULL)
+	{
+		return;
+	}
 	
 	if(format == 1)
 	{
@@ -58,22 +68,42 @@ void printTime(cTime_t* time, int format)
 
 int getHour(cTime_t* time)
 {
+	if(time == NULL)
+	{
+		return -1;
+	}
+	
  	return time->m_hour;
 }
 
 int getMinutes(cTime_t* time)
 {
+	if(time == NULL)
+	{
+		return -1;
+	}
+	
 	return time->m_min;
 }
 
 int getSeconds(cTime_t* time)
 {
+	if(time == NULL)
+	{
+		return -1;
+	}
+	
 	return time->m_sec;
 }
 
 void addTimes(cTime_t* time1, cTime_t* time2)
 {
 	int sec, min, hour;
+	
+	if(time1 == NULL || time2 == NULL)
+	{
+		return;
+	}
 	
 	sec = time1->m_sec + time2->m_sec;
 	min = time1->m_min + time2->m_min + sec/60;
@@ -87,7 +117,12 @@ void addTimes(cTime_t* time1, cTime_t* time2)
 
 int setDate(cDate_t* date, int day, int month, int year)
 {
-	if(day < 0 && day > 31 || month < 0 && month > 12 || year < 0)
+	if(date == NULL)
+	{
+		return -1;
+	}
+	
+	if(day < 0 || day > 31 || month < 0 || month > 12 || year < 0)
 	{
 		return -1;
 	}
@@ -111,6 +146,11 @@ int setDate(cDate_t* date, int day, int month, int year)
 	
 void printDate(cDate_t* date, int format)
 {
+	if(date == NULL)
+	{
+		return;
+	}
+	
 	if(format == 1)
 	{
 		printf("%d/%s/%d\n\n", date->m_day, monthsArr[date->m_month - 1], date->m_year);
@@ -127,16 +167,31 @@ void printDate(cDate_t* date, int format)
 
 int getDays(cDate_t* date)
 {
+	if(date == NULL)
+	{
+		return -1;
+	}
+	
 	return date->m_year;
 }
 
 int getMonths(cDate_t* date)
 {
+	if(date == NULL)
+	{
+		return -1;
+	}
+	
 	return date->m_month;
 }
 
 int getYears(cDate_t* date)
 {
+	if(date == NULL)
+	{
+		return -1;
+	}
+	
 	return date->m_year;
 }
 
@@ -145,26 +200,36 @@ void addDays(cDate_t* date, int days)
 	int i;
 	int day = date->m_day, month = date->m_month, year = date->m_year;
 		
+	if(date == NULL)
+	{
+		return;
+	}
+	
 	for (i = 0; i < days; i++)
-    {
-        day++;
-        if(day > daysArr[month-1] || (month == 2 && day == 29 && !leapYear(date)))
         {
-            day = 1;
-            month++;
-            if(month == 13)
-            {
-                month = 1;
-                year++;
-            }
+                day++;
+                if(day > daysArr[month-1] || (month == 2 && day == 29 && !leapYear(date)))
+                {
+                    day = 1;
+                    month++;
+                    if(month == 13)
+                    {
+                        month = 1;
+                        year++;
+                    }
+                }
         }
-    }
 	setDate(date, day, month, year);
 }
 
 int leapYear(cDate_t* date)
 {
 	int year = date->m_year, isLeap = 0;
+	
+	if(date == NULL)
+	{
+		return -1;
+	}
 	
 	if(year%4 == 0)
     {
@@ -186,6 +251,11 @@ int leapYear(cDate_t* date)
 
 char* getNameOfMonth(cDate_t* date)
 {
+	if(date == NULL)
+	{
+		return NULL;
+	}
+	
 	return monthsArr[date->m_month];
 }
 
@@ -193,6 +263,11 @@ int getNumberOfDay(cDate_t* date)
 {
 	int days_in_feb = 28;
 	int result = date->m_day;
+	
+	if(date == NULL)
+	{
+		return -1;
+	}	
 	
 	if(leapYear(date))
 	{
