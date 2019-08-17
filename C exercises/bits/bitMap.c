@@ -21,6 +21,11 @@ static void int2Bin(int num)
 	}
 }
 
+int callFunc(bitFunc func, BitMap* bm, int n)
+{
+	return func(bm, n);
+}
+
 BitMap* createBM(int nf)
 {
 	BitMap* bm;
@@ -54,6 +59,8 @@ void destroyBM(BitMap* bm)
 	{
 		return;
 	}
+	
+	free(bm->m_arr);
 	
 	free(bm);
 }
@@ -127,7 +134,7 @@ int bitStatus(BitMap* bm, int n)
 	
 	result = bm->m_arr[intIndex] & switcher;
 	
-	return result;
+	return result ? 1 : 0;
 }
 
 int printBM(BitMap* bm)

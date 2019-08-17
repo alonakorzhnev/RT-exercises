@@ -8,6 +8,10 @@ typedef struct
 	
 }BitMap;
 
+typedef int (*bitFunc)(BitMap*, int);
+
+int callFunc(bitFunc func, BitMap* bm, int n);
+
 BitMap* createBM(int nf);
 
 void destroyBM(BitMap* bm);

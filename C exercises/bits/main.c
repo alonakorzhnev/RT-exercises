@@ -4,8 +4,9 @@
 int main() 
 {
 	unsigned int option;
-	int cont = 1, nf, flagSuccess, num;
+	int cont = 1, nf, result, num;
 	BitMap* bm;
+	bitFunc func[3] = {bitOn, bitOff, bitStatus};
 	
 	printf("Enter number of fitchers: ");
 	scanf("%d", &nf);
@@ -22,7 +23,7 @@ int main()
 		printf("Choose option: \n");
 		printf("1: Bit on: \n");
 		printf("2: Bit off: \n");
-		printf("3: \n");
+		printf("3: Bit status: \n");
 		printf("4: Print bit map: \n");
 		printf("Any another number - stop\n");
 		
@@ -33,9 +34,9 @@ int main()
 				printf("Enter number of bit to on: \n");
 				scanf("%d", &num);
 				
-				flagSuccess = bitOn(bm, num);
+				result = callFunc(func[0], bm, num);
 				
-				if(flagSuccess == -1)
+				if(result == -1)
 				{
 					printf("\nError in function bitOn\n\n");
 				}
@@ -46,9 +47,9 @@ int main()
 				printf("Enter number of bit to off: \n");
 				scanf("%d", &num);
 				
-				flagSuccess = bitOff(bm, num);
+				result = callFunc(func[1], bm, num);
 				
-				if(flagSuccess == -1)
+				if(result == -1)
 				{
 					printf("\nError in function bitOff\n\n");
 				}
@@ -56,13 +57,27 @@ int main()
 				break;
 				
 			case 3:
+				printf("Enter number of bit to check status: \n");
+				scanf("%d", &num);
+				
+				result = result = callFunc(func[2], bm, num);
+				
+				if(result == -1)
+				{
+					printf("\nError in function bitStatus\n\n");
+				}
+				else
+				{
+					printf("\nBit status: %d\n\n", result);
+				}
+				
 				break;
 				
 			case 4:
 				
-				flagSuccess = printBM(bm);
+				result = printBM(bm);
 				
-				if(flagSuccess == -1)
+				if(result == -1)
 				{
 					printf("\nError in function printBM\n\n");
 				}
@@ -71,8 +86,7 @@ int main()
 				
 			default:
 				cont = 0;
-				break;
-				
+				break;				
 		}
 	}
 	
