@@ -29,7 +29,7 @@ int callFunc(bitFunc func, BitMap* bm, int n)
 BitMap* createBM(int nf)
 {
 	BitMap* bm;
-	int countInt = nf/(sizeof(int)*8) + 1;
+	int countInt = (nf - 1)/(sizeof(int)*8) + 1;
 	
 	bm = (BitMap*)malloc(sizeof(BitMap));
 	
@@ -139,7 +139,7 @@ int bitStatus(BitMap* bm, int n)
 
 int printBM(BitMap* bm)
 {
-	int countInt = bm->m_nf/(sizeof(int)*8) + 1;
+	int countInt = (bm->m_nf - 1)/(sizeof(int)*8) + 1;
 	int i;
 	
 	if(bm == NULL)

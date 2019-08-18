@@ -3,7 +3,7 @@
 
 typedef struct
 {
-	int m_nf;
+	unsigned int m_nf;
 	int* m_arr;
 	
 }BitMap;
