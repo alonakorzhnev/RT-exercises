@@ -79,7 +79,7 @@ int bitOn(BitMap* bm, int n)
 		return -1;
 	}
 	
-	intIndex = n/(sizeof(int)*8);
+	intIndex = (n - 1)/(sizeof(int)*8);
 	bitIndex = n%(sizeof(int)*8);	
 	
 	switcher <<= 32 - bitIndex;		
@@ -102,7 +102,7 @@ int bitOff(BitMap* bm, int n)
 		return -1;
 	}
 	
-	intIndex = n/(sizeof(int)*8);
+	intIndex = (n - 1)/(sizeof(int)*8);
 	bitIndex = n%(sizeof(int)*8);	
 	
 	switcher <<= 32 - bitIndex;		
@@ -127,7 +127,7 @@ int bitStatus(BitMap* bm, int n)
 		return -1;
 	}
 	
-	intIndex = n/(sizeof(int)*8);
+	intIndex = (n - 1)/(sizeof(int)*8);
 	bitIndex = n%(sizeof(int)*8);
 	
 	switcher <<= 32 - bitIndex;		
