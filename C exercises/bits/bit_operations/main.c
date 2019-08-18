@@ -5,8 +5,9 @@ int main()
 {
 	unsigned int option;
 	int cont = 1;
-	int n, p, steps, x, y;
+	int n, p, steps, x, y, i, j, value;
 	unsigned char result;
+	unsigned int w, number;
 	
 	while(cont)
 	{
@@ -24,7 +25,7 @@ int main()
 				printf("Enter number: ");
 				scanf("%d", &n);
 				
-				printf("N: ");
+				printf("Number: ");
 				char2Bin(n);
 				result = bitInvers(n);
 				printf("Result: ");
@@ -36,7 +37,7 @@ int main()
 				printf("Enter number and steps to rotate: ");
 				scanf("%d%d", &n, &steps);
 				
-				printf("N: ");
+				printf("Number: ");
 				char2Bin(n);
 				result = bitRotate(n, steps);
 				printf("Result: ");
@@ -52,13 +53,29 @@ int main()
 				char2Bin(x);
 				printf("Y: ");
 				char2Bin(y);
-				result = setBits1(x, p, n, y);				
+				result = setBitsFirst(x, p, n, y);				
 				printf("Result: ");
 				char2Bin(result);
 								
 				break;
 				
 			case 4:
+				
+				printf("Enter w, i, j, value: ");
+				scanf("%u%d%d%d", &w, &i, &j, &value);
+				
+				printf("Number: ");
+				int2Bin(w);
+				number = setBitsSecond(w, i, j, value);		
+				
+				if(number == 0)
+				{
+					printf("\nYou have entered the wrong data.");
+					break;
+				}
+				printf("\nResult: ");
+				int2Bin(number);
+				printf("\n");
 				
 				break;
 				
