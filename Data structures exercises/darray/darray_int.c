@@ -2,6 +2,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+static void swap(int* x, int* y)
+{
+	int temp;
+	temp = *x;
+	*x = *y;
+	*y = temp;
+}
+
 struct darray
 {
     int* arr;
@@ -85,7 +93,7 @@ AdtStatus   darrayDelete(darray *dArr,  int *_item)
         return AllocationError;
     }
 
-    if((dArr->index == dArr->capacity*3/8) && (dArr->index != dArr->initial_capacity))
+    if((dArr->index == dArr->capacity*3/8) && (dArr->capacity != dArr->initial_capacity))
     {
         temp = dArr->arr;
         dArr->arr = (int*)realloc(dArr->arr, (dArr->capacity/2)*sizeof(int));
@@ -112,12 +120,56 @@ AdtStatus   darrayGet(darray *dArr, size_t _index, int *_item)
         return AllocationError;
     }
 
-
+    *_item = dArr->arr[_index];
     
     return OK;
 }
 
-AdtStatus   darraySet(darray *dArr, size_t _index, int  _item);
-AdtStatus   darrayItemsNum(darray *dArr, int*  _numOfItems);
+AdtStatus   darraySet(darray *dArr, size_t _index, int  _item)
+{
+    if(dArr == NULL)
+    {
+        return AllocationError;
+    }
 
-AdtStatus darraySort(darray *dArr, size_t arraySize);
+    dArr->arr[_index] = _item;
+    
+    return OK;
+}
+
+AdtStatus   darrayItemsNum(darray *dArr, int*  _numOfItems)
+{
+    if(dArr == NULL)
+    {
+        return AllocationError;
+    }
+
+    *_numOfItems = dArr->index;
+    
+    return OK;
+}
+
+AdtStatus darraySort(darray *dArr)
+{
+    int i, j;	
+    size_t size = dArr->index;
+
+    if(dArr == NULL)
+    {
+        return AllocationError;
+    }
+	
+	for(i = 0; i < size - 1; ++i)
+	{
+		for(j = 0; j < size - 1 - i; ++j)
+		{
+			if(dArr->arr[j] > dArr->arr[j + 1])
+			{
+				swap(&dArr->arr[j], &dArr->arr[j + 1]);
+			}
+		}		
+	}
+
+    return OK;
+}
+
