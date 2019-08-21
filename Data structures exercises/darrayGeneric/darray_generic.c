@@ -153,6 +153,20 @@ AdtStatus   darrayItemsNum(darray *dArr, int*  _numOfItems)
     return OK;
 }
 
+static void swap(void * a, void * b, size_t len)
+{
+    unsigned char * p = a, * q = b, tmp;
+    size_t i;
+
+    for(i = 0; i != len; ++i)
+    {
+        tmp = p[i];
+        p[i] = q[i];
+        q[i] = tmp;
+    }
+}
+
+
 AdtStatus darraySort(darray *dArr, elementCompare compareFunc)
 {
     

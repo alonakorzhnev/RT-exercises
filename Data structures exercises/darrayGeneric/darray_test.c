@@ -1,5 +1,6 @@
 #include "darray_generic.h"
 #include <stdio.h>
+#include <math.h>
 
 typedef struct 
 {
@@ -8,9 +9,14 @@ typedef struct
 }Point;
 
 Point* createPoint(int x, int y);
-AdtStatus elDestroy(Point *element, char* fileName);
-AdtStatus addElement(darray *dArr);
-AdtStatus deleteElement(darray *dArr, char* fileName);
+void elDestroy(void *element, void* fileName);
+void addElement(darray *dArr);
+void deleteElement(darray *dArr, char* fileName);
+void setElement(darray *dArr, char* fileName);
+void printElements(darray *dArr);
+int elCompare(void *_elemA, void *_elemB);
+void sortElements(darray* dArr, elementCompare compareFunc);
+
 
 int main()
 {
@@ -18,7 +24,8 @@ int main()
     int capacity, numOfItems;
     int status, i, cont = 1;
     unsigned int option;
-    elementDestroy elDestroy;
+    elementDestroy fDestroy = elDestroy;
+    elementCompare fCompare = elCompare;
     Point *point;
     char fileName[32];
 
@@ -50,54 +57,24 @@ int main()
 		switch(option)
 		{
 			case 1:	
-                status = addElement(myDarr);				
+                addElement(myDarr);				
 				break;
 			
 			case 2:               
-				status = deleteElement(myDarr, fileName);	
+				deleteElement(myDarr, fileName);	
 				break;				
 			
 			case 3:
-				
-
+				setElement(myDarr, fileName);
 				break;
 
-            /*case 4:
-
-                status = darraySort(myDarr);
-
-                if(status)
-                {
-                    printf("Error in darraySort!");
-                }
-
+            case 4:                
+                sortElements(myDarr, fCompare);
                 break;
 
             case 5:
-                numOfItems = 0;
-                status = darrayItemsNum(myDarr, &numOfItems);
-
-                if(status)
-                {
-                    printf("Error in darrayItemsNum!");
-                    cont = 0;
-                }
-
-                for(i = 0; i < numOfItems; ++i)
-                {
-                    status = darrayGet(myDarr, i, &item);  
-
-                    if(status)
-                    {
-                        printf("Error in darrayGet!");
-                    }
-
-                    printf("%d " , item);                  
-                }
-
-                printf("\n");   
-
-                break;*/
+                printElements(myDarr);
+                break;
 				
 			default:
 				cont = 0;
@@ -105,7 +82,7 @@ int main()
 		}
 	}    
 
-    status = darrayDestroy(myDarr, *elDestroy, fileName);
+    status = darrayDestroy(myDarr, fDestroy, fileName);
 
     if(status)
     {
@@ -132,27 +109,27 @@ Point* createPoint(int x, int y)
     return pointPtr;
 }
 
-AdtStatus elDestroy(Point* element, char* fileName)
+void elDestroy(void* element, void* fileName)
 {
     FILE* fp;
 
-    if(element == NULL)
+    if((Point*)element == NULL)
     {
-        return NullPointer;
+        return;
     }
 
-    if((fp = fopen(fileName, "a")) == NULL)
+    if((fp = fopen((char*)fileName, "a")) == NULL)
     {
-        return NullPointer;
+        return;
     }
 
-    fprintf(fp, "x = %d, y = %d\n", element->x, element->y);
+    fprintf(fp, "x = %d, y = %d\n", ((Point*)element)->x, ((Point*)element)->y);
 
     fclose(fp);
-    free(element);
+    free((Point*)element);
 }
 
-AdtStatus addElement(darray *dArr)
+void addElement(darray *dArr)
 {
     int x, y, status;
     Point *point;
@@ -164,53 +141,130 @@ AdtStatus addElement(darray *dArr)
 
     if(point == NULL)
     {
-        return NullPointer;
+        printf("Error in createPoint\n");
+        return;
     }
 				
     status = darrayAdd(dArr,  point);
 
     if(status)
     {
-        return NullPointer;
+        printf("Error in darrayAdd\n");
+        return;
     }
-
-    return OK;
 }
 
-AdtStatus deleteElement(darray *dArr, char* fileName)
+void deleteElement(darray *dArr, char* fileName)
 {
     Point *pointPtr;
     int status;
     void* voidPtr;
+
+    if(dArr == NULL)
+    {
+        return;
+    }
     
     status = darrayDelete(dArr,  &voidPtr);
     pointPtr = (void*)voidPtr; 
-    status = elDestroy(pointPtr, fileName);
-
-    return OK;    
+    elDestroy(pointPtr, fileName);    
 }
 
-/*AdtStatus setElement(darray *dArr, char* fileName)
+void setElement(darray *dArr, char* fileName)
 {
-    Point *point;
+    Point *pointPtr;
+    void* voidPtr;
     int index, status;
+    int x, y;
 
     printf("Enter index of element to set: ");
     scanf("%d", &index);
 
-    status = darrayGet(dArr, index, *point);
+    status = darrayGet(dArr, index, &voidPtr);
 
-    if(point == NULL)
+    if(voidPtr == NULL)
     {
-        return NullPointer;
+        return;
     }
 
-    status = elDestroy(point, fileName);
+    pointPtr = (void*)voidPtr;
+    elDestroy(pointPtr, fileName);
 
-    point = createPoint(x, y);
+    printf("Enter x and y value of struct to set: ");
+    scanf("%d%d", &x, &y);
+
+    pointPtr = createPoint(x, y);
 				
-    status = darraySet(myDarr, index, point);    
+    status = darraySet(dArr, index, pointPtr);    
+}
 
-    return OK;
-}*/
+void printElements(darray *dArr)
+{
+    int numOfItems = 0, i, status;
+    Point *pointPtr;
+    void* voidPtr;
 
+    status = darrayItemsNum(dArr, &numOfItems);
+
+    if(status)
+    {
+        printf("Error in darrayItemsNum!");
+        return;
+    }
+
+    for(i = 0; i < numOfItems; ++i)
+    {
+        status = darrayGet(dArr, i, &voidPtr); 
+        pointPtr = (void*)voidPtr; 
+
+        if(status)
+        {
+            printf("Error in darrayGet!");
+            break;
+        }
+
+        printf("x = %d y = %d\n" , pointPtr->x, pointPtr->y);                  
+    }
+
+    printf("\n"); 
+}
+
+int elCompare(void *_elemA, void *_elemB)
+{
+    int xA, yA, xB, yB;
+
+    xA = ((Point*)_elemA)->x;
+    yA = ((Point*)_elemA)->y;
+    xB = ((Point*)_elemB)->x;
+    yB = ((Point*)_elemB)->y;
+
+    if(sqrt(pow(xA, 2) + pow(yA, 2)) > sqrt(pow(xB, 2) + pow(yB, 2)))
+    {
+        return 1;
+    }
+    else if(sqrt(pow(xA, 2) + pow(yA, 2)) < sqrt(pow(xB, 2) + pow(yB, 2)))
+    {
+        return -1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+void sortElements(darray* dArr, elementCompare compareFunc)
+{
+    int status;
+
+    if(dArr == NULL)
+    {
+        return;
+    }
+
+    status = darraySort(dArr, compareFunc);
+
+    if(status)
+    {
+        printf("Error in darraySort!");
+    }
+}

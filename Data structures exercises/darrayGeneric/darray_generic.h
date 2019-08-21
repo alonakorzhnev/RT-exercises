@@ -9,8 +9,8 @@
 
 typedef enum {OK, AllocationError, NullPointer} AdtStatus;
 
-typedef void (* elementDestroy)(void *_elem, void *context);
-typedef int (* elementCompare)(void *_elemA, void *_elemB);
+typedef void (*elementDestroy)(void *_elem, void *context);
+typedef int (*elementCompare)(void *_elemA, void *_elemB);
 
 
 /* forward declaration of the darray type */
