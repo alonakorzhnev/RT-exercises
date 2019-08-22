@@ -201,6 +201,7 @@ static void myQsort(void* v, size_t size, int left, int right,
 
 AdtStatus darraySort(darray *dArr, elementCompare compareFunc, size_t size)
 {
+    myQsort(dArr, size, dArr->arr[0], dArr->arr[dArr->index - 1], compareFunc);
     
     return OK;
 }
