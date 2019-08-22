@@ -4,7 +4,7 @@
 
 struct darray
 {
-    int **arr;
+    void **arr;
     size_t index;
     size_t capacity;
     size_t initial_capacity;
@@ -71,7 +71,7 @@ AdtStatus   darrayAdd(darray *dArr,  void  *_item)
     if(dArr->index == dArr->capacity)
     {
         temp = dArr->arr;
-        dArr->arr = (int**)realloc(dArr->arr, (dArr->capacity*2)*sizeof(void*));
+        dArr->arr = (void**)realloc(dArr->arr, (dArr->capacity*2)*sizeof(void*));
 
         if(dArr->arr == NULL)
         {
@@ -153,56 +153,58 @@ AdtStatus   darrayItemsNum(darray *dArr, int*  _numOfItems)
     return OK;
 }
 
-static void swap(void* el1, void* el2, size_t size) 
+static void swap(void** el1, void** el2) 
 { 
-    char buffer[size];
-
-    memcpy(buffer, el1, size); 
-    memcpy(el1, el2, size); 
-    memcpy(el2, buffer, size); 
+    void* temp = *el1;
+    *el1 = *el2;
+    *el2 = temp;  
 } 
 
-static void myQsort(void* v, size_t size, int left, int right, 
-                    elementCompare compareFunc) 
-{ 
-    void *vt, *v3; 
-    int i, last, mid = (left + right)/2; 
-
-    if (left >= right)
-    {
-        return;
-    }
- 
-    void* vl = (char*)(v + (left * size)); 
-    void* vr = (char*)(v + (mid * size));
-
-    swap(vl, vr, size); 
-    last = left; 
-
-    for (i = left + 1; i <= right; i++) 
-    { 
-        vt = (char*)(v + (i * size)); 
-
-        if (compareFunc(vl, vt) > 0) 
-        { 
-            ++last; 
-            v3 = (char*)(v + (last*size)); 
-
-            swap(vt, v3, size); 
-        } 
-    } 
-
-    v3 = (char*)(v + (last * size)); 
-    swap(vl, v3, size); 
-
-    myQsort(v, size, left, last - 1, compareFunc); 
-    myQsort(v, size, last + 1, right, compareFunc); 
-} 
-
-AdtStatus darraySort(darray *dArr, elementCompare compareFunc, size_t size)
+static int partition(darray *dArr, int fIndex, int lIndex, elementCompare compareFunc)
 {
-    myQsort(dArr, size, dArr->arr[0], dArr->arr[dArr->index - 1], compareFunc);
-    
+    void* pivot = dArr->arr[fIndex + (lIndex - fIndex)/2];
+
+    while(1)
+    {
+        while(compareFunc(dArr->arr[fIndex], pivot) > 0)
+        {
+            fIndex = fIndex + 1;
+        }         
+
+        while(compareFunc(dArr->arr[lIndex], pivot) < 0)
+        {
+            lIndex = lIndex - 1;
+        }
+ 
+        if(fIndex >= lIndex)
+        {
+            return lIndex;
+        }            
+
+        swap(&(dArr->arr[fIndex]), &(dArr->arr[lIndex]));
+
+        fIndex = fIndex + 1;
+        lIndex = lIndex - 1;
+    }       
+}
+
+static void myQuickSort(darray *dArr, int fIndex, int lIndex, elementCompare compareFunc)
+{
+    int p = 0;
+
+    if(fIndex < lIndex)
+    {
+        p = partition(dArr, fIndex, lIndex, compareFunc);
+        myQuickSort(dArr, fIndex, p, compareFunc);
+        myQuickSort(dArr, p + 1, lIndex, compareFunc);
+    }
+}
+
+
+AdtStatus darraySort(darray *dArr, elementCompare compareFunc)
+{
+    myQuickSort(dArr, 0, dArr->index - 1, compareFunc); 
+
     return OK;
 }
   

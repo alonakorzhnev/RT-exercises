@@ -229,25 +229,18 @@ void printElements(darray *dArr)
 
 int elCompare(void *_elemA, void *_elemB)
 {
+    Point *p1, *p2;
     int xA, yA, xB, yB;
 
-    xA = ((Point*)_elemA)->x;
-    yA = ((Point*)_elemA)->y;
-    xB = ((Point*)_elemB)->x;
-    yB = ((Point*)_elemB)->y;
+    p1 = _elemA;
+    p2 = _elemB;
 
-    if(sqrt(pow(xA, 2) + pow(yA, 2)) > sqrt(pow(xB, 2) + pow(yB, 2)))
-    {
-        return 1;
-    }
-    else if(sqrt(pow(xA, 2) + pow(yA, 2)) < sqrt(pow(xB, 2) + pow(yB, 2)))
-    {
-        return -1;
-    }
-    else
-    {
-        return 0;
-    }
+    xA = p1->x;
+    yA = p1->y;
+    xB = p2->x;
+    yB = p2->y;
+
+    return sqrt(pow(xB, 2) + pow(yB, 2)) - sqrt(pow(xA, 2) + pow(yA, 2));
 }
 
 void sortElements(darray* dArr, elementCompare compareFunc)
@@ -259,7 +252,7 @@ void sortElements(darray* dArr, elementCompare compareFunc)
         return;
     }
 
-    status = darraySort(dArr, compareFunc, sizeof(Point*));
+    status = darraySort(dArr, compareFunc);
 
     if(status)
     {
