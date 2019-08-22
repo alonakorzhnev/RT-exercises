@@ -21,12 +21,10 @@ void sortElements(darray* dArr, elementCompare compareFunc);
 int main()
 {
     darray *myDarr;
-    int capacity, numOfItems;
-    int status, i, cont = 1;
+    int capacity, i, cont = 1, status;
     unsigned int option;
     elementDestroy fDestroy = elDestroy;
     elementCompare fCompare = elCompare;
-    Point *point;
     char fileName[32];
 
     printf("Enter initial capacity of array: ");
@@ -261,7 +259,7 @@ void sortElements(darray* dArr, elementCompare compareFunc)
         return;
     }
 
-    status = darraySort(dArr, compareFunc);
+    status = darraySort(dArr, compareFunc, sizeof(Point*));
 
     if(status)
     {

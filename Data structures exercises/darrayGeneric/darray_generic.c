@@ -153,23 +153,58 @@ AdtStatus   darrayItemsNum(darray *dArr, int*  _numOfItems)
     return OK;
 }
 
-static void swap(void * a, void * b, size_t len)
-{
-    unsigned char * p = a, * q = b, tmp;
-    size_t i;
+static void swap(void* el1, void* el2, size_t size) 
+{ 
+    char buffer[size];
 
-    for(i = 0; i != len; ++i)
+    memcpy(buffer, el1, size); 
+    memcpy(el1, el2, size); 
+    memcpy(el2, buffer, size); 
+} 
+
+static void myQsort(void* v, size_t size, int left, int right, 
+                    elementCompare compareFunc) 
+{ 
+    void *vt, *v3; 
+    int i, last, mid = (left + right)/2; 
+
+    if (left >= right)
     {
-        tmp = p[i];
-        p[i] = q[i];
-        q[i] = tmp;
+        return;
     }
-}
+ 
+    void* vl = (char*)(v + (left * size)); 
+    void* vr = (char*)(v + (mid * size));
 
+    swap(vl, vr, size); 
+    last = left; 
 
-AdtStatus darraySort(darray *dArr, elementCompare compareFunc)
+    for (i = left + 1; i <= right; i++) 
+    { 
+        vt = (char*)(v + (i * size)); 
+
+        if (compareFunc(vl, vt) > 0) 
+        { 
+            ++last; 
+            v3 = (char*)(v + (last*size)); 
+
+            swap(vt, v3, size); 
+        } 
+    } 
+
+    v3 = (char*)(v + (last * size)); 
+    swap(vl, v3, size); 
+
+    myQsort(v, size, left, last - 1, compareFunc); 
+    myQsort(v, size, last + 1, right, compareFunc); 
+} 
+
+AdtStatus darraySort(darray *dArr, elementCompare compareFunc, size_t size)
 {
     
     return OK;
 }
+  
+
+
 
