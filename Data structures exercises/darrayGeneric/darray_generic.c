@@ -166,12 +166,12 @@ static int partition(darray *dArr, int fIndex, int lIndex, elementCompare compar
 
     while(1)
     {
-        while(compareFunc(dArr->arr[fIndex], pivot) > 0)
+        while(compareFunc(dArr->arr[fIndex], pivot) < 0)
         {
             fIndex = fIndex + 1;
         }         
 
-        while(compareFunc(dArr->arr[lIndex], pivot) < 0)
+        while(compareFunc(dArr->arr[lIndex], pivot) > 0)
         {
             lIndex = lIndex - 1;
         }

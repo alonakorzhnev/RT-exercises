@@ -240,7 +240,7 @@ int elCompare(void *_elemA, void *_elemB)
     xB = p2->x;
     yB = p2->y;
 
-    return sqrt(pow(xB, 2) + pow(yB, 2)) - sqrt(pow(xA, 2) + pow(yA, 2));
+    return sqrt(pow(xA, 2) + pow(yA, 2)) - sqrt(pow(xB, 2) + pow(yB, 2));
 }
 
 void sortElements(darray* dArr, elementCompare compareFunc)
