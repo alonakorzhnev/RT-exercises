@@ -11,12 +11,12 @@ struct Node
 typedef struct Node Node;
 
 Node* createNode();
-Node* createList();
+Node* createList(int size);
 void printList(Node *head);
 void flipList(Node **head);
 void middleElement(Node *head);
-void destroylist(Node *head);
-void addLoop(Node *head);
+void destroyList(Node *head, int size);
+int addLoop(Node *head);
 void findLoop(Node *head);
 void findCommin();
 
@@ -25,7 +25,8 @@ int main()
 {
     Node *head;
     unsigned int option;
-	int cont = 1;
+	int cont = 1, size = 0, loopSize = 0;
+    srand(time(NULL)); 
 
     while(cont)
 	{
@@ -43,7 +44,9 @@ int main()
 		switch(option)
 		{
             case 1:
-                head = createList();
+                printf("Enter size of linked list: ");
+                scanf("%d", &size);
+                head = createList(size);
                 break;
 
             case 2:
@@ -55,7 +58,7 @@ int main()
                 break;
 
             case 4:
-                addLoop(head);
+                loopSize = addLoop(head);
                 break;
 
             case 5:
@@ -76,18 +79,14 @@ int main()
         }
     }
 
-    destroylist(head);
+    destroyList(head, size + loopSize);
     return 0;
 }
 
-Node* createList()
+Node* createList(int size)
 {
-    int i, size;
-    Node *head, *last;
-    srand(time(NULL));
-
-    printf("Enter size of linked list: ");
-    scanf("%d", &size);
+    int i;
+    Node *head, *last;      
 
     head = createNode();
 
@@ -194,22 +193,28 @@ void middleElement(Node *head)
     printf("Middle element: %d\n", first->value);
 }
 
-void destroylist(Node *head)
+void destroyList(Node *head, int size)
 {
     Node *temp;
 
-    while(head != NULL)
+    while(size != 0)
     {
         temp = head;
         head = head->next;
         free(temp);
+        --size;
     }
 }
 
-void addLoop(Node *head)
+int addLoop(Node *head)
 {
-    Node *loop = createList(); 
-    Node *insert = head;
+    Node *loop, *insert = head;
+    int size;
+
+    printf("Enter size of loop to add: ");
+    scanf("%d", &size);
+
+    loop = createList(size); 
 
     if(loop == NULL)
     {
@@ -229,6 +234,8 @@ void addLoop(Node *head)
     }
 
     loop->next = insert;
+
+    return size;
 }
 
 void findLoop(Node *head)
@@ -268,12 +275,23 @@ void findLoop(Node *head)
 
 void findCommin()
 {
-    Node *firstList, *secondList, *commonList, *temp;
+    Node *firstList, *secondList, *commonList, *temp, *firstTmp, *secondTmp;
+    int difference;
+    int firstSize, secondSize, commonSize;
 
-    firstList = createList();
-    secondList = createList();
-    commonList = createList();
+    printf("Enter size of first, second and common linked list: ");
+    scanf("%d%d%d", &firstSize, &secondSize, &commonSize);
 
+    firstList = createList(firstSize);
+    secondList = createList(secondSize);
+    commonList = createList(commonSize);
+
+    if(firstList == NULL || secondList == NULL || commonList == NULL)
+    {
+        return;
+    }
+
+    /*Create lists with commin node*/
     temp = firstList;
     while(temp->next != NULL)
     {
@@ -292,7 +310,46 @@ void findCommin()
 
     printList(firstList);
     printList(secondList);
-    printList(commonList);
+
+    /*Find size difference*/
+    firstTmp = firstList;
+    secondTmp = secondList;
+
+    difference = firstSize - secondSize;
+    if(difference > 0)
+    {
+        while(difference)
+        {
+            firstTmp = firstTmp->next; 
+            --difference;
+        }
+    }
+    else
+    {
+        difference = abs(difference);
+        while(difference)
+        {
+            secondTmp = secondTmp->next; 
+            --difference;
+        }
+    }
+    
+    /*Find commin node*/
+    while(firstTmp->next != NULL)
+    {
+        firstTmp = firstTmp->next;    
+        secondTmp = secondTmp->next;
+
+        if(firstTmp == secondTmp)
+        {
+            printf("Commin node: %d\n", firstTmp->value);
+            break;
+        }
+    }
+
+    /*Destroy lists*/
+    destroyList(firstList, firstSize + commonSize);
+    destroyList(secondList, secondSize);
 }
 
 
