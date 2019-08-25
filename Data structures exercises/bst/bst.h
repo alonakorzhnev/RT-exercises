@@ -2,19 +2,19 @@
 #define BST_H
 
 typedef struct Tree Tree;
-
 typedef void (*walkFunc)(int value);
+typedef enum {OK, NullPointer, IsFound, IsNotFound} AdtStatus;
 
 Tree* createTree();
 
-int insertNode(Tree *tree, int value);
+AdtStatus insertNode(Tree *tree, int value);
 
-int searchNode(Tree *tree, int value);
+AdtStatus searchNode(Tree *tree, int value);
 
-int deleteNode(Tree *tree, int value);
+AdtStatus deleteNode(Tree *tree, int value);
 
-int destroyTree(Tree *tree);
+AdtStatus destroyTree(Tree *tree);
 
-int walk(Tree *tree, walkFunc func, int order);
+AdtStatus walk(Tree *tree, walkFunc func, int order);
 
 #endif
