@@ -35,6 +35,7 @@ void testCreateTree()
 {
     Tree *tree = createTree();
     
+    /*Tree is not NULL*/
     CU_ASSERT_PTR_NOT_NULL(tree);
     CU_ASSERT_FALSE(destroyTree(tree));
 }
