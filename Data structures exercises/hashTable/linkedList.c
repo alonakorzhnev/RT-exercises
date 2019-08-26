@@ -24,7 +24,7 @@ AdtStatus createNode(Node **newNode, void *key, void *value)
     return OK;
 }
 
-AdtStatus addNode(Node *list, void *key, void *value)
+AdtStatus addNode(Node **list, void *key, void *value)
 {
     Node *newNode;
     AdtStatus status;
@@ -40,11 +40,9 @@ AdtStatus addNode(Node *list, void *key, void *value)
         return AllocationError;
     }
 
-    while(list->next != NULL)
-    {
-        list = list->next;
-    }
-    list->next = newNode;
+    newNode->next = *list;
+    *list = newNode;
+
     return OK;
 }
 
@@ -54,9 +52,9 @@ AdtStatus findNodeInList(Node *list, void *key, elementCompare compF, Node **cur
     {
         return NullPointer;
     }
-
-    while(list->next != NULL)
-    {
+    
+    while(list != NULL)
+    {        
         if(compF(key, list->key) == 0)
         {
             *curr = list;
@@ -69,7 +67,7 @@ AdtStatus findNodeInList(Node *list, void *key, elementCompare compF, Node **cur
     return IsNotFound;
 }
 
-AdtStatus printList(Node *head, printFunc func)
+AdtStatus printList(Node *head, elementPrint func)
 {
     Node *temp;
     temp = head;
@@ -86,6 +84,7 @@ AdtStatus printList(Node *head, printFunc func)
     }
 
     printf("%s", "NULL\n");
+    return OK;
 }
 
 AdtStatus destroyNode(Node *node) /*change*/
@@ -95,4 +94,5 @@ AdtStatus destroyNode(Node *node) /*change*/
         return NullPointer;
     }
     free(node);
+    return OK;
 }

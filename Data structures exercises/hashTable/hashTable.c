@@ -1,15 +1,16 @@
 #include "hashTable.h"
-#include "linkedList.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 struct HashTable
 {
-    Node **buskets;
+    Node **baskets;
     size_t size;
     hashFunction hashF;
     elementCompare compF;
 };
+
+static AdtStatus findNodeInBusket(HashTable *hashT, void *key, Node **curr);
 
 AdtStatus hashTableCreate(HashTable **hashT, size_t size, hashFunction hashF, elementCompare compF)
 {
@@ -19,8 +20,8 @@ AdtStatus hashTableCreate(HashTable **hashT, size_t size, hashFunction hashF, el
         return AllocationError;
     }
 
-    (*hashT)->buskets = (Node**)malloc(size*1.3*sizeof(Node*));
-    if((*hashT)->buskets == NULL)
+    (*hashT)->baskets = (Node**)malloc(size*1.3*sizeof(Node*));
+    if((*hashT)->baskets == NULL)
     {
         free(*hashT);
         return AllocationError;
@@ -41,13 +42,39 @@ AdtStatus hashTableDestroy(HashTable *hashT, elementDestroy destroyF)
 
 AdtStatus hashTableInsert(HashTable *hashT, void *key, void *value)
 {
+    AdtStatus status;
+    void *foundValue;
+    unsigned long searchKey;
+    Node *newNode;
+
+    status = hashTableFind(hashT, key, &foundValue);
+
+    if(status == NullPointer)
+    {
+        return NullPointer;
+    }
+    if(status == FreeBusket)
+    {
+        searchKey = (hashT->hashF(key))%(hashT->size);
+        status = createNode(&newNode, key, value);
+        hashT->baskets[searchKey] = newNode;
+    }
 
     return OK;
 }
 
-AdtStatus hashTableFind(HashTable *hashT, void *key, void **value)
-{
-    
+AdtStatus hashTableFind(HashTable *hashT, void *key, void **foundValue)
+{   
+    Node *foundNode;
+    AdtStatus status;
+
+    if(hashT == NULL)
+    {
+        return NullPointer;
+    }
+
+    status = findNodeInBusket(hashT, key, &foundNode);
+    return status; 
 }
 
 static AdtStatus findNodeInBusket(HashTable *hashT, void *key, Node **curr)
@@ -57,10 +84,12 @@ static AdtStatus findNodeInBusket(HashTable *hashT, void *key, Node **curr)
 
     if(hashT == NULL)
     {
-        return Nullpointer;
+        return NullPointer;
     }
 
-    searchKey = (hashT->(hashF(key)))%(hashT->size);
+    searchKey = (hashT->hashF(key))%(hashT->size);
+
+    /*printf("%lu\n", searchKey);*/
 
     if(hashT->baskets[searchKey] == NULL)
     {
@@ -68,8 +97,10 @@ static AdtStatus findNodeInBusket(HashTable *hashT, void *key, Node **curr)
     }
     else
     {
-        return findNodeInList(hashT->baskets[searchKey], key, hashT->compF, *curr);
+        status = findNodeInList(hashT->baskets[searchKey], key, hashT->compF, curr);
     }
+
+    return status;
 }
 
 
