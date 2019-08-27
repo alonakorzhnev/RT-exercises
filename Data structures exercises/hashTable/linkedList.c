@@ -29,11 +29,6 @@ AdtStatus addNode(Node **list, void *key, void *value)
     Node *newNode;
     AdtStatus status;
 
-    if(list == NULL)
-    {
-        return NullPointer;
-    }
-
     status = createNode(&newNode, key, value);
     if(status == AllocationError)
     {
@@ -46,12 +41,9 @@ AdtStatus addNode(Node **list, void *key, void *value)
     return OK;
 }
 
-AdtStatus findNodeInList(Node *list, void *key, elementCompare compF, Node **curr)
+AdtStatus findNodeInList(Node *list, void *key, elementCompare compF, Node **parent, Node **curr)
 {
-    if(list == NULL)
-    {
-        return NullPointer;
-    }
+    *parent = NULL;
     
     while(list != NULL)
     {        
@@ -61,13 +53,14 @@ AdtStatus findNodeInList(Node *list, void *key, elementCompare compF, Node **cur
             return IsFound;
         }
 
+        *parent = list;
         list = list->next;
     }
 
     return IsNotFound;
 }
 
-AdtStatus printList(Node *head, elementPrint func)
+AdtStatus printList(Node *head, forEachFunction func)
 {
     Node *temp;
     temp = head;

@@ -10,7 +10,7 @@ struct HashTable
     elementCompare compF;
 };
 
-static AdtStatus findNodeInBusket(HashTable *hashT, void *key, Node **curr);
+static AdtStatus findNodeInBasket(HashTable *hashT, void *key, Node **parent, Node **curr);
 
 AdtStatus hashTableCreate(HashTable **hashT, size_t size, hashFunction hashF, elementCompare compF)
 {
@@ -44,7 +44,7 @@ AdtStatus hashTableInsert(HashTable *hashT, void *key, void *value)
 {
     AdtStatus status;
     void *foundValue;
-    unsigned long searchKey;
+    unsigned long basketIndex;
     Node *newNode;
 
     status = hashTableFind(hashT, key, &foundValue);
@@ -53,59 +53,54 @@ AdtStatus hashTableInsert(HashTable *hashT, void *key, void *value)
     {
         return NullPointer;
     }
-    if(status == FreeBusket)
-    {
-        searchKey = (hashT->hashF(key))%(hashT->size);
-        status = createNode(&newNode, key, value);
-        hashT->baskets[searchKey] = newNode;
-    }
-
-    return OK;
-}
-
-AdtStatus hashTableFind(HashTable *hashT, void *key, void **foundValue)
-{   
-    Node *foundNode;
-    AdtStatus status;
-
-    if(hashT == NULL)
-    {
-        return NullPointer;
-    }
-
-    status = findNodeInBusket(hashT, key, &foundNode);
-    return status; 
-}
-
-static AdtStatus findNodeInBusket(HashTable *hashT, void *key, Node **curr)
-{
-    unsigned long searchKey;
-    AdtStatus status;
-
-    if(hashT == NULL)
-    {
-        return NullPointer;
-    }
-
-    searchKey = (hashT->hashF(key))%(hashT->size);
-
-    /*printf("%lu\n", searchKey);*/
-
-    if(hashT->baskets[searchKey] == NULL)
-    {
-        return FreeBusket;
-    }
     else
     {
-        status = findNodeInList(hashT->baskets[searchKey], key, hashT->compF, curr);
+        basketIndex = (hashT->hashF(key))%(hashT->size);
+        status = addNode(&(hashT->baskets[basketIndex]), key, value);
     }
 
     return status;
 }
 
+AdtStatus hashTableFind(HashTable *hashT, void *key, void **foundValue)
+{   
+    Node *foundNode, *parent;
 
-AdtStatus hashTableForEach(HashTable *hashT)
+    if(hashT == NULL)
+    {
+        return NullPointer;
+    }
+
+    return findNodeInBasket(hashT, key, &parent, &foundNode);
+}
+
+static AdtStatus findNodeInBasket(HashTable *hashT, void *key, Node **parent, Node **curr)
 {
+    unsigned long basketIndex;
+
+    if(hashT == NULL)
+    {
+        return NullPointer;
+    }
+
+    basketIndex = (hashT->hashF(key))%(hashT->size);
+    return findNodeInList(hashT->baskets[basketIndex], key, hashT->compF, parent, curr);
+}
+
+
+AdtStatus hashTableForEach(HashTable *hashT, forEachFunction func)
+{
+    int i;
+
+    if(hashT == NULL)
+    {
+        return NullPointer;
+    }
+
+    for(i = 0; i < hashT->size; ++i)
+    {
+        printList(hashT->baskets[i], func);
+    }
 
     return OK;
 }
