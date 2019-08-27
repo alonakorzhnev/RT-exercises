@@ -2,9 +2,10 @@
 #define LINKEDLIST_H
 
 typedef struct Node Node;
-typedef enum {OK, AllocationError, NullPointer, IsFound, IsNotFound, FreeBusket} AdtStatus;
+typedef enum {OK, Failed, AllocationError, NullPointer, IsFound, IsNotFound, FreeBusket} AdtStatus;
 typedef int (*elementCompare)(void *keyA, void *keyB);
-typedef void (*forEachFunction)(void *keyA, void *keyB);
+typedef void (*forEachFunction)(void *key, void *value);
+typedef void (*elementDestroy)(void *key, void *value);
 
 AdtStatus createNode(Node **newNode, void *key, void *value);
 
@@ -12,8 +13,16 @@ AdtStatus addNode(Node **list, void *key, void *value);
 
 AdtStatus findNodeInList(Node *list, void *key, elementCompare compF, Node **parent, Node **curr);
 
-AdtStatus printList(Node *head, forEachFunction func);
+AdtStatus listForEach(Node *head, forEachFunction func);
 
-AdtStatus destroyNode(Node *node);
+AdtStatus destroyNode(Node *node, elementDestroy destroyF);
+
+AdtStatus destroyList(Node *head, elementDestroy destroyF);
+
+void* getValue(Node *node);
+
+void setValue(Node *node, void *value);
+
+void setNext(Node *parent, Node *curr);
 
 #endif

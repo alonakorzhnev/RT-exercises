@@ -24,6 +24,31 @@ AdtStatus createNode(Node **newNode, void *key, void *value)
     return OK;
 }
 
+void* getValue(Node *node)
+{
+    if(node != NULL)
+    {
+        return node->value;
+    }
+    return NULL;
+}
+
+void setValue(Node *node, void *value)
+{
+    if(node != NULL && value != NULL)
+    {
+        node->value = value;
+    }
+}
+
+void setNext(Node *parent, Node *curr)
+{
+    if(parent != NULL && curr != NULL)
+    {
+        parent->next = curr->next;
+    }
+}
+
 AdtStatus addNode(Node **list, void *key, void *value)
 {
     Node *newNode;
@@ -60,7 +85,7 @@ AdtStatus findNodeInList(Node *list, void *key, elementCompare compF, Node **par
     return IsNotFound;
 }
 
-AdtStatus printList(Node *head, forEachFunction func)
+AdtStatus listForEach(Node *head, forEachFunction func)
 {
     Node *temp;
     temp = head;
@@ -75,17 +100,36 @@ AdtStatus printList(Node *head, forEachFunction func)
         func(temp->key, temp->value);
         temp = temp->next;
     }
+    printf("NULL\n");
 
-    printf("%s", "NULL\n");
     return OK;
 }
 
-AdtStatus destroyNode(Node *node) /*change*/
+AdtStatus destroyList(Node *head, elementDestroy destroyF)
+{
+    Node *temp;
+    AdtStatus status = OK;
+
+    while(head != NULL)
+    {
+        temp = head;
+        head = head->next;
+        if(destroyNode(temp, destroyF) != OK)
+        {
+            status = Failed;
+        }
+    }
+    return status;
+}
+
+AdtStatus destroyNode(Node *node, elementDestroy destroyF) 
 {
     if(node == NULL)
     {
         return NullPointer;
     }
+
+    destroyF(node->key, node->value);
     free(node);
     return OK;
 }

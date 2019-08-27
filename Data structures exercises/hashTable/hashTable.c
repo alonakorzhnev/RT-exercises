@@ -8,19 +8,25 @@ struct HashTable
     size_t size;
     hashFunction hashF;
     elementCompare compF;
+    size_t countElements;
 };
 
 static AdtStatus findNodeInBasket(HashTable *hashT, void *key, Node **parent, Node **curr);
 
 AdtStatus hashTableCreate(HashTable **hashT, size_t size, hashFunction hashF, elementCompare compF)
 {
-    *hashT = (HashTable*)calloc(1, sizeof(HashTable));    
+    if(size <= 0)
+    {
+        return Failed;
+    }
+
+    *hashT = (HashTable*)malloc(sizeof(HashTable));    
     if(*hashT == NULL)
     {
         return AllocationError;
     }
 
-    (*hashT)->baskets = (Node**)malloc(size*1.3*sizeof(Node*));
+    (*hashT)->baskets = (Node**)calloc(size*1.3, sizeof(Node*));
     if((*hashT)->baskets == NULL)
     {
         free(*hashT);
@@ -30,40 +36,38 @@ AdtStatus hashTableCreate(HashTable **hashT, size_t size, hashFunction hashF, el
     (*hashT)->size = size*1.3;
     (*hashT)->hashF = hashF;
     (*hashT)->compF = compF;
+    (*hashT)->countElements = 0;
 
     return OK;
 }
 
 AdtStatus hashTableDestroy(HashTable *hashT, elementDestroy destroyF)
 {
+    int i;
+    AdtStatus status = OK;
 
-    return OK;
+    if(hashT == NULL)
+    {
+        return NullPointer;
+    }
+
+    for(i = 0; i < hashT->size; ++i)
+    {
+        if(destroyList(hashT->baskets[i], destroyF) != OK)    
+        {
+            status = Failed;
+        }  
+    }
+
+    free(hashT->baskets);
+    free(hashT);
+    return status;
 }
 
 AdtStatus hashTableInsert(HashTable *hashT, void *key, void *value)
 {
     AdtStatus status;
-    void *foundValue;
     unsigned long basketIndex;
-    Node *newNode;
-
-    status = hashTableFind(hashT, key, &foundValue);
-
-    if(status == NullPointer)
-    {
-        return NullPointer;
-    }
-    else
-    {
-        basketIndex = (hashT->hashF(key))%(hashT->size);
-        status = addNode(&(hashT->baskets[basketIndex]), key, value);
-    }
-
-    return status;
-}
-
-AdtStatus hashTableFind(HashTable *hashT, void *key, void **foundValue)
-{   
     Node *foundNode, *parent;
 
     if(hashT == NULL)
@@ -71,7 +75,67 @@ AdtStatus hashTableFind(HashTable *hashT, void *key, void **foundValue)
         return NullPointer;
     }
 
-    return findNodeInBasket(hashT, key, &parent, &foundNode);
+    status = findNodeInBasket(hashT, key, &parent, &foundNode);
+
+    if(status == NullPointer)
+    {
+        return NullPointer;
+    }
+    
+    if(status == IsNotFound)
+    {
+        basketIndex = (hashT->hashF(key))%(hashT->size);
+        status = addNode(&(hashT->baskets[basketIndex]), key, value);
+        ++(hashT->countElements);
+    }
+    
+    return status;
+}
+
+AdtStatus hashTableUpdate(HashTable *hashT, void *key, void *value)
+{
+    AdtStatus status;
+    unsigned long basketIndex;
+    Node *foundNode, *parent;
+
+    if(hashT == NULL)
+    {
+        return NullPointer;
+    }
+
+    status = findNodeInBasket(hashT, key, &parent, &foundNode);
+
+    if(status == NullPointer)
+    {
+        return NullPointer;
+    }
+    
+    if(status == IsFound)
+    {
+        setValue(foundNode, value);
+    }
+    
+    return status;
+}
+
+AdtStatus hashTableFind(HashTable *hashT, void *key, void **foundValue)
+{   
+    Node *foundNode, *parent;
+    AdtStatus status;
+
+    if(hashT == NULL)
+    {
+        return NullPointer;
+    }
+
+    status = findNodeInBasket(hashT, key, &parent, &foundNode);
+
+    if(status == IsFound)
+    {
+        *foundValue = getValue(foundNode);
+    }
+
+    return status;
 }
 
 static AdtStatus findNodeInBasket(HashTable *hashT, void *key, Node **parent, Node **curr)
@@ -99,14 +163,41 @@ AdtStatus hashTableForEach(HashTable *hashT, forEachFunction func)
 
     for(i = 0; i < hashT->size; ++i)
     {
-        printList(hashT->baskets[i], func);
-    }
+        listForEach(hashT->baskets[i], func);
+    }    
 
     return OK;
 }
 
-AdtStatus hashTableRemove(HashTable *hashT, void *key, void **value)
+AdtStatus hashTableRemove(HashTable *hashT, void *key, void **foundValue, elementDestroy destroyF)
 {
+    Node *foundNode, *parent;
+    AdtStatus status;
+    unsigned long basketIndex;
 
-    return OK;
+    if(hashT == NULL)
+    {
+        return NullPointer;
+    }
+
+    status = findNodeInBasket(hashT, key, &parent, &foundNode);
+
+    if(status == IsFound)
+    {
+        *foundValue = getValue(foundNode);       
+
+        if(parent == NULL)
+        {            
+            basketIndex = (hashT->hashF(key))%(hashT->size);
+            hashT->baskets[basketIndex] = NULL;
+        }
+        else
+        {
+            setNext(parent, foundNode);
+        }
+        status = destroyNode(foundNode, destroyF);
+        --(hashT->countElements);
+    }    
+
+    return status;
 }
