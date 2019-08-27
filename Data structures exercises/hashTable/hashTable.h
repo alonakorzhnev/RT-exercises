@@ -16,7 +16,7 @@ AdtStatus hashTableUpdate(HashTable *hashT, void *key, void *value);
 
 AdtStatus hashTableFind(HashTable *hashT, void *key, void **foundValue);
 
-AdtStatus hashTableForEach(HashTable *hashT, forEachFunction func);
+AdtStatus hashTableForEach(HashTable *hashT, forEachFunction func, void *context);
 
 AdtStatus hashTableRemove(HashTable *hashT, void *key, void **value, elementDestroy destroyF);
 

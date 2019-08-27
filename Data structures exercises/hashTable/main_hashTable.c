@@ -4,7 +4,7 @@
 #include <CUnit/CUnit.h>
 #include <CUnit/Basic.h>
 
-void printFunc(void *key, void *value);
+void printFunc(void *key, void *value, void *context);
 unsigned long hashFunc(void *key);
 int compareFunc(void *keyA, void *keyB);
 void destroyFunc(void *key, void *value);
@@ -12,9 +12,9 @@ void destroyFunc(void *key, void *value);
 void testCreate();
 void testDestroy();
 void tetsInsert();
-/*void testRemove();
+void testRemove();
 void testFind();
-void testForEach();*/
+void testForEach();
 
 
 int main()
@@ -25,65 +25,20 @@ int main()
     CU_add_test(suite, "testCreate", testCreate);
     CU_add_test(suite, "testDestroy", testDestroy);
     CU_add_test(suite, "tetsInsert", tetsInsert);
-    /*CU_add_test(suite, "testRemove", testRemove);
+    CU_add_test(suite, "testRemove", testRemove);
     CU_add_test(suite, "testFind", testFind);    
-    CU_add_test(suite, "testForEach", testForEach);*/
+    CU_add_test(suite, "testForEach", testForEach);
 
     CU_basic_set_mode(CU_BRM_VERBOSE);
     CU_basic_run_tests();
     CU_cleanup_registry();
 
-    /*AdtStatus status;
-    int size = 100;
-    HashTable *hashT;
-    hashFunction hashF = hashFunc;
-    elementCompare compF = compareFunc;
-    forEachFunction forEachPrint = printFunc;
-    elementDestroy destroyF = destroyFunc;
-
-    void *foundPtr;
-    char *foundStr;
-    char *key1 = "12345678";
-    char *value1 = "12345678";
-
-    char *key2 = "12345678";
-    char *value2 = "1234909";
-    char *key3 = "67555544478";
-
-
-    status = hashTableCreate(&hashT, size, hashF, compF);
-
-    status = hashTableInsert(hashT, key1, value1);
-    status = hashTableInsert(hashT, key2, value2);
-    status = hashTableInsert(hashT, "4567988", "9776756");
-
-
-    status = hashTableFind(hashT, key1, &foundPtr);
-    foundStr = (char*)foundPtr;
-    printf("%d\n", status);
-    status = hashTableFind(hashT, key2, &foundPtr);
-    foundStr = (char*)foundPtr;
-    printf("%d\n", status);
-    status = hashTableFind(hashT, key3, &foundPtr);
-    foundStr = (char*)foundPtr;
-    printf("%d\n", status);
-    
-    status = hashTableForEach(hashT, forEachPrint);
-
-    status = hashTableRemove(hashT, key1, &foundPtr, destroyFunc);
-    foundStr = (char*)foundPtr;
-    printf("%s\n", foundStr);
-
-    status = hashTableForEach(hashT, forEachPrint);
-
-    printf("\n");
-    status = hashTableDestroy(hashT, destroyF);*/
-
     return 0;
 }
 
-void printFunc(void *key, void *value)
+void printFunc(void *key, void *value, void **context)
 {
+    /*((int*)context) += 1;*/
     printf("key = %s, value = %s -> ", (char*)key, (char*)value);
 }
 
@@ -146,14 +101,14 @@ void testDestroy()
     CU_ASSERT_PTR_NOT_NULL(hashT);
     CU_ASSERT_FALSE(hashTableDestroy(hashT, destroyF));
     /*Destroy NULL*/
-    CU_ASSERT_EQUAL(hashTableDestroy(nullHashT, destroyF), 3);
+    CU_ASSERT_EQUAL(hashTableDestroy(nullHashT, destroyF), NullPointer);
     /*Destroy hash with elements*/
     CU_ASSERT_FALSE(hashTableCreate(&hashT, 100, hashF, compF));
-    CU_ASSERT_FALSE(hashTableInsert(hashT, "1234567", "Alona"));
-    CU_ASSERT_FALSE(hashTableInsert(hashT, "5754839", "Rami"));
-    CU_ASSERT_FALSE(hashTableInsert(hashT, "2874772", "Oren"));
-    CU_ASSERT_FALSE(hashTableInsert(hashT, "1039483", "Mariana"));
-    CU_ASSERT_FALSE(hashTableInsert(hashT, "1048373", "Aviv"));
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1234567", "Alona"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "5754839", "Rami"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "2874772", "Oren"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1039483", "Mariana"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1048373", "Aviv"), OK);
     CU_ASSERT_FALSE(hashTableDestroy(hashT, destroyF));
 }
 
@@ -163,21 +118,94 @@ void tetsInsert()
     hashFunction hashF = hashFunc;
     elementCompare compF = compareFunc;
     elementDestroy destroyF = destroyFunc;
+    void *voidPtr;
 
+    /*Insert to NULL hash*/
+    CU_ASSERT_EQUAL(hashTableInsert(nullHashT, "1234567", "Alona"), NullPointer);
     /*Multiple insert*/
     CU_ASSERT_FALSE(hashTableCreate(&hashT, 5, hashF, compF));
     CU_ASSERT_PTR_NOT_NULL(hashT);
-    CU_ASSERT_FALSE(hashTableInsert(hashT, "1234567", "Alona"));
-    CU_ASSERT_FALSE(hashTableInsert(hashT, "5754839", "Rami"));
-    CU_ASSERT_FALSE(hashTableInsert(hashT, "2874772", "Oren"));
-    CU_ASSERT_FALSE(hashTableInsert(hashT, "1039483", "Mariana"));
-    CU_ASSERT_FALSE(hashTableInsert(hashT, "1048373", "Aviv"));
-    CU_ASSERT_FALSE(hashTableInsert(hashT, "7597935", "Alex"));
-    CU_ASSERT_FALSE(hashTableInsert(hashT, "9547484", "Maxim"));
-    CU_ASSERT_FALSE(hashTableInsert(hashT, "7336566", "Margo"));
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1234567", "Alona"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "5754839", "Rami"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "2874772", "Oren"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1039483", "Mariana"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1048373", "Aviv"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "7597935", "Alex"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "9547484", "Maxim"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "7336566", "Margo"), OK);
+    /*Check insert by found value*/
+    CU_ASSERT_EQUAL(hashTableFind(hashT, "9547484", &voidPtr), IsFound);
+    CU_ASSERT_STRING_EQUAL((char*)voidPtr, "Maxim");
+    /*Insert existed element*/
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1039483", "Mariana"), IsFound);
+    /*Insert NULL key*/
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, NULL, "Mariana"), NullPointer);
+    /*Insert NULL value*/
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "5462324", NULL), NullPointer);
     CU_ASSERT_FALSE(hashTableDestroy(hashT, destroyF));
-    /*Insert to NULL hash*/
-    CU_ASSERT_EQUAL(hashTableInsert(nullHashT, "1234567", "Alona"), NullPointer);
+}
 
+void testRemove()
+{
+    HashTable *hashT, *nullHashT = NULL;
+    hashFunction hashF = hashFunc;
+    elementCompare compF = compareFunc;
+    elementDestroy destroyF = destroyFunc;
+    void *voidPtr;
 
+    /*Remove from NULL hash*/
+    CU_ASSERT_EQUAL(hashTableRemove(nullHashT, "1234567", &voidPtr, destroyF), NullPointer);
+    CU_ASSERT_FALSE(hashTableCreate(&hashT, 5, hashF, compF));
+    CU_ASSERT_PTR_NOT_NULL(hashT);
+    /*Multiple insert*/
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1234567", "Alona"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "5754839", "Rami"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "2874772", "Oren"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1039483", "Mariana"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1048373", "Aviv"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "7597935", "Alex"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "9547484", "Maxim"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "7336566", "Margo"), OK);
+    /*Remove NULL key*/
+    CU_ASSERT_EQUAL(hashTableRemove(hashT, NULL, &voidPtr, destroyF), NullPointer);
+    /*Remove not existed element*/
+    CU_ASSERT_EQUAL(hashTableRemove(hashT, "9643746", &voidPtr, destroyF), IsNotFound);
+    /*Remove existed element*/
+    CU_ASSERT_EQUAL(hashTableRemove(hashT, "1234567", &voidPtr, destroyF), IsFound);
+    CU_ASSERT_STRING_EQUAL((char*)voidPtr, "Alona");
+    /*Check remove by found value*/
+    CU_ASSERT_EQUAL(hashTableFind(hashT, "1234567", &voidPtr), IsNotFound);
+    CU_ASSERT_FALSE(hashTableDestroy(hashT, destroyF));
+}
+
+void testFind()
+{
+    HashTable *hashT, *nullHashT = NULL;
+    hashFunction hashF = hashFunc;
+    elementCompare compF = compareFunc;
+    elementDestroy destroyF = destroyFunc;
+    void *voidPtr;
+
+    /*Find in NULL hash*/
+    CU_ASSERT_EQUAL(hashTableFind(nullHashT, "1234567", &voidPtr), NullPointer);
+    CU_ASSERT_FALSE(hashTableCreate(&hashT, 5, hashF, compF));
+    CU_ASSERT_PTR_NOT_NULL(hashT);
+    /*Multiple insert*/
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1234567", "Alona"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "5754839", "Rami"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "2874772", "Oren"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1039483", "Mariana"), OK);
+    /*Find existed value*/
+    CU_ASSERT_EQUAL(hashTableFind(hashT, "1234567", &voidPtr), IsFound);
+    CU_ASSERT_STRING_EQUAL((char*)voidPtr, "Alona");
+    /*Find not existed value*/
+    CU_ASSERT_EQUAL(hashTableFind(hashT, "8848744", &voidPtr), IsNotFound);
+    /*Find NULL key*/
+    CU_ASSERT_EQUAL(hashTableFind(hashT, NULL, &voidPtr), NullPointer);
+    CU_ASSERT_FALSE(hashTableDestroy(hashT, destroyF));
+}
+
+void testForEach()
+{
+    int context = 0;
 }

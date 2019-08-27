@@ -85,7 +85,7 @@ AdtStatus findNodeInList(Node *list, void *key, elementCompare compF, Node **par
     return IsNotFound;
 }
 
-AdtStatus listForEach(Node *head, forEachFunction func)
+AdtStatus listForEach(Node *head, forEachFunction func, void *context)
 {
     Node *temp;
     temp = head;
@@ -97,7 +97,7 @@ AdtStatus listForEach(Node *head, forEachFunction func)
 
     while(temp != NULL)
     {
-        func(temp->key, temp->value);
+        func(temp->key, temp->value, context);
         temp = temp->next;
     }
     printf("NULL\n");

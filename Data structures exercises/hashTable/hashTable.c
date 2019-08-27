@@ -70,7 +70,7 @@ AdtStatus hashTableInsert(HashTable *hashT, void *key, void *value)
     unsigned long basketIndex;
     Node *foundNode, *parent;
 
-    if(hashT == NULL)
+    if(hashT == NULL || key == NULL || value == NULL)
     {
         return NullPointer;
     }
@@ -85,8 +85,15 @@ AdtStatus hashTableInsert(HashTable *hashT, void *key, void *value)
     if(status == IsNotFound)
     {
         basketIndex = (hashT->hashF(key))%(hashT->size);
-        status = addNode(&(hashT->baskets[basketIndex]), key, value);
-        ++(hashT->countElements);
+        if(addNode(&(hashT->baskets[basketIndex]), key, value) == OK)
+        {
+            ++(hashT->countElements);
+            status = OK;
+        }
+        else
+        {
+            status = Failed;
+        }        
     }
     
     return status;
@@ -112,7 +119,14 @@ AdtStatus hashTableUpdate(HashTable *hashT, void *key, void *value)
     
     if(status == IsFound)
     {
-        setValue(foundNode, value);
+        if(setValue(foundNode, value) == OK)
+        {
+            status = OK;
+        }
+        else
+        {
+            status = Failed;
+        }
     }
     
     return status;
@@ -123,7 +137,7 @@ AdtStatus hashTableFind(HashTable *hashT, void *key, void **foundValue)
     Node *foundNode, *parent;
     AdtStatus status;
 
-    if(hashT == NULL)
+    if(hashT == NULL || key == NULL)
     {
         return NullPointer;
     }
@@ -142,7 +156,7 @@ static AdtStatus findNodeInBasket(HashTable *hashT, void *key, Node **parent, No
 {
     unsigned long basketIndex;
 
-    if(hashT == NULL)
+    if(hashT == NULL || key == NULL)
     {
         return NullPointer;
     }
@@ -152,7 +166,7 @@ static AdtStatus findNodeInBasket(HashTable *hashT, void *key, Node **parent, No
 }
 
 
-AdtStatus hashTableForEach(HashTable *hashT, forEachFunction func)
+AdtStatus hashTableForEach(HashTable *hashT, forEachFunction func, void *context)
 {
     int i;
 
@@ -163,7 +177,7 @@ AdtStatus hashTableForEach(HashTable *hashT, forEachFunction func)
 
     for(i = 0; i < hashT->size; ++i)
     {
-        listForEach(hashT->baskets[i], func);
+        listForEach(hashT->baskets[i], func, context);
     }    
 
     return OK;
@@ -175,7 +189,7 @@ AdtStatus hashTableRemove(HashTable *hashT, void *key, void **foundValue, elemen
     AdtStatus status;
     unsigned long basketIndex;
 
-    if(hashT == NULL)
+    if(hashT == NULL || key == NULL)
     {
         return NullPointer;
     }
@@ -195,8 +209,15 @@ AdtStatus hashTableRemove(HashTable *hashT, void *key, void **foundValue, elemen
         {
             setNext(parent, foundNode);
         }
-        status = destroyNode(foundNode, destroyF);
-        --(hashT->countElements);
+        if(destroyNode(foundNode, destroyF) == OK)
+        {
+            --(hashT->countElements);
+            status = OK;
+        }
+        else
+        {
+            status = Failed;
+        }
     }    
 
     return status;
