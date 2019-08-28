@@ -102,7 +102,6 @@ AdtStatus hashTableInsert(HashTable *hashT, void *key, void *value)
 AdtStatus hashTableUpdate(HashTable *hashT, void *key, void *value)
 {
     AdtStatus status;
-    unsigned long basketIndex;
     Node *foundNode, *parent;
 
     if(hashT == NULL)
@@ -119,14 +118,8 @@ AdtStatus hashTableUpdate(HashTable *hashT, void *key, void *value)
     
     if(status == IsFound)
     {
-        if(setValue(foundNode, value) == OK)
-        {
-            status = OK;
-        }
-        else
-        {
-            status = Failed;
-        }
+        setValue(foundNode, value);
+        status = OK;
     }
     
     return status;

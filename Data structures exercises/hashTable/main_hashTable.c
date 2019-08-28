@@ -36,9 +36,11 @@ int main()
     return 0;
 }
 
-void printFunc(void *key, void *value, void **context)
+void printFunc(void *key, void *value, void *context)
 {
-    /*((int*)context) += 1;*/
+    int *intPtr = (int*)context;
+    ++(*intPtr);
+
     printf("key = %s, value = %s -> ", (char*)key, (char*)value);
 }
 
@@ -171,7 +173,7 @@ void testRemove()
     /*Remove not existed element*/
     CU_ASSERT_EQUAL(hashTableRemove(hashT, "9643746", &voidPtr, destroyF), IsNotFound);
     /*Remove existed element*/
-    CU_ASSERT_EQUAL(hashTableRemove(hashT, "1234567", &voidPtr, destroyF), IsFound);
+    CU_ASSERT_EQUAL(hashTableRemove(hashT, "1234567", &voidPtr, destroyF), OK);
     CU_ASSERT_STRING_EQUAL((char*)voidPtr, "Alona");
     /*Check remove by found value*/
     CU_ASSERT_EQUAL(hashTableFind(hashT, "1234567", &voidPtr), IsNotFound);
@@ -208,4 +210,29 @@ void testFind()
 void testForEach()
 {
     int context = 0;
+    int *contextPtr = &context;
+    void *voidPtr;
+    HashTable *hashT, *nullHashT = NULL;
+    hashFunction hashF = hashFunc;
+    elementCompare compF = compareFunc;
+    elementDestroy destroyF = destroyFunc;
+    forEachFunction forEachF = printFunc;
+
+    /*ForEach in NULL hash*/
+    CU_ASSERT_EQUAL(hashTableForEach(nullHashT, forEachF, contextPtr), NullPointer);
+    CU_ASSERT_FALSE(hashTableCreate(&hashT, 5, hashF, compF));
+    CU_ASSERT_PTR_NOT_NULL(hashT);
+    /*Multiple insert*/
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1234567", "Alona"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "5754839", "Rami"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "2874772", "Oren"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1039483", "Mariana"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "1048373", "Aviv"), OK);
+    CU_ASSERT_EQUAL(hashTableInsert(hashT, "7597935", "Alex"), OK);
+    CU_ASSERT_EQUAL(hashTableRemove(hashT, "1234567", &voidPtr, destroyF), OK);
+    CU_ASSERT_EQUAL(hashTableRemove(hashT, "5754839", &voidPtr, destroyF), OK);
+    /*ForEach in not NULL hash*/
+    CU_ASSERT_EQUAL(hashTableForEach(hashT, forEachF, contextPtr), OK);
+    CU_ASSERT_EQUAL(context, 4);
+    CU_ASSERT_FALSE(hashTableDestroy(hashT, destroyF));
 }
