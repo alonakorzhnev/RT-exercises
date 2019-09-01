@@ -19,7 +19,9 @@ int main()
     {
         strcpy(writeBuffer, "Hello son!\n");
         write(fd[1], writeBuffer, sizeof(writeBuffer));
+
         wait(&pid);
+        
         read(fd[0], readBuffer, sizeof(readBuffer));
         printf("%s", readBuffer);            
     }
