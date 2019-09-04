@@ -5,13 +5,16 @@
 int main()
 {
     int *buffer, *memory;
-    int size = 1000000;
+    int buffSize = 1000002;
 
-    buffer = (int*)malloc(size);
+    buffer = (int*)malloc(buffSize);
 
-    memory = (int*)memInit(buffer, size);
+    memory = (int*)memInit(buffer, buffSize);
 
     printf("%lu\n", (size_t)memory);
+    printf("%x\n", (unsigned int)memory[0]);
+   
+    memFree(memory);
 
     return 0;
 }
