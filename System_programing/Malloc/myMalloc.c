@@ -2,10 +2,11 @@
 #include <stdio.h>
 #define SET_FREE(header) ((header) & 0x7fffffff)
 #define SET_OCCUPIED(header) ((header) | 0x80000000)
+#define GET_SIZE(header) ((header) & 0x7fffffff)
 
-static int checkBit(int *num)
+static int checkBit(int num)
 {
-    if(*num & 0x80000000)
+    if((num & 0x80000000) == 0)
         return 0;
     else
         return 1;
@@ -17,8 +18,9 @@ static void addBlock(int *header, int size)
 
     *header = SET_OCCUPIED(size); 
 
+    /*Split blocks*/
     if(size < oldSize)
-        *(header + size) = oldSize - size;
+        *(header + size/4) = oldSize - size;
 }
 
 void* memInit(void *buffer, int buffSize)
@@ -31,69 +33,84 @@ void* memInit(void *buffer, int buffSize)
         return NULL;
     }
 
+    /*Align size and addresses*/
     bufHead = (4 - ((size_t)buffer)%4)%4;   
     buffer = (char*)buffer + bufHead;
     buffSize = buffSize - bufHead;
     buffSize = buffSize - (buffSize)%4;
 
     header = (int*)buffer;
-    *header = SET_FREE(buffSize - 2*4);
-    /*header[(buffSize -2*4)/4 - 1] = SET_OCCUPIED(0);*/
-    end = (int*)&(((char*)buffer)[buffSize - 2*4]);
+    /*Set header*/
+    *header = SET_FREE(buffSize - 4);
+    end = (int*)&(((char*)buffer)[buffSize - 4]);
+    /*Set end of memory*/
     *end = SET_OCCUPIED(0);
 
     return (void*)buffer;
 }
 
-void* memAlloc(void *buffer, int buffSize, int size)
+void* memAlloc(void *buffer, int size)
 {
-    int *header, *buffPtr;
-    int currIndex = 0, sizeInt, buffInt;
+    int *header, *next;
 
     if(buffer == NULL)
     {
         return NULL;
     }
 
-    buffPtr = (int*)buffer;
-    sizeInt = (size + (4 - size%4) + 4)/4;
-    buffInt = buffSize/4;   
+    /*New size + header*/
+    size += (4 - size%4)%4 + 4;
+    header = (int*)buffer; 
 
-    while(currIndex != buffInt)
+    while(1)
     {
-        *header = buffPtr[currIndex];
-
-        if(checkBit(header))
+        if(checkBit(*header) == 1)
         {
-            currIndex = buffPtr[currIndex];
+            /*End of heap - return NULL*/
+            if(GET_SIZE(*header) == 0)
+                return NULL;
+            
+            /*Go to next block*/
+            header = header + GET_SIZE(*header)/4;
         }
         else
         {
-            if(size <= buffPtr[currIndex])
+            /*Block size more then size allocation*/
+            if(size <= *header)
             {
                 addBlock(header, size);
+                return header;
             }
+            /*Block size less then size allocation*/
             else
             {
-                
-            }
-            
-        }
-        
-    }
-    
+                next = header + *header/4;
+
+                /*Merge free blocks*/
+                if(checkBit(*next) == 0)
+                {
+                    *header = *header + *next;
+                } 
+                else
+                {
+                    header = next;
+                }                                    
+            }         
+        }        
+    }    
 }
 
 void memFree(void *block)
 {
-    int *head = (int*)block, *next;
+    int *header = (int*)block, *next;
 
-    *head = SET_FREE(*head);
-    next = *head/4 + head;
+    *header = SET_FREE(*header);
+    next = *header/4 + header;
 
-    while(checkBit(next) == 1)
+    /*Merge free blocks*/
+    while(checkBit(*next) == 0)
     {
-        *head = *head/4 + *next/4;
+        *header = *header + *next;
         next = *next/4 + next;
     }
 }

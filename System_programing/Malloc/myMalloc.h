@@ -3,7 +3,7 @@
 
 void* memInit(void *buffer, int buffSize);
 
-void* memAlloc(void *buffer, int buffSize, int size);
+void* memAlloc(void *buffer, int size);
 
 void memFree(void *blockPtr);
 
