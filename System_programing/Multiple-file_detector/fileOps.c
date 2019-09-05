@@ -74,10 +74,11 @@ char** getContent(char* path)
     {
         if(strcmp(de->d_name,".")==0 || strcmp(de->d_name,"..")==0) 
             continue;        
-        buffer = (char*)malloc(64*sizeof(char));
+        buffer = (char*)malloc(512*sizeof(char));
         strcpy(buffer, path); 
-        strcpy(buffer + strlen(path), de->d_name);   
-        content[index] = buffer;
+        strcat(buffer, "/");
+        strcat(buffer, de->d_name);   
+        content[index] = buffer;                             
         ++index;
     }
     content[index] = NULL;
