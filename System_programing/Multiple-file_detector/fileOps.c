@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*On success, non zero is returned*/
 int isFile(const char* path) 
@@ -20,66 +21,84 @@ int isDir(const char* path)
     return S_ISDIR(buf.st_mode);
 }
 
-char* fileToString(char *path)
+static int countContent(char* path)
 {
-    FILE *fp;
-    long fsize;
-    char *string;
+    struct dirent *de;    
+    DIR *dr;
+    int count = 0;
 
     if(path == NULL)
-        return NULL;
-
-    if(isFile(path) == 0)
-        return NULL;
-
-    if((fp = fopen(path, "rb")) == NULL)
-        return NULL;
-
-    fseek(fp, 0, SEEK_END);
-    fsize = ftell(fp);
-    fseek(fp, 0, SEEK_SET); 
-
-    string = (char*)malloc(fsize + 1);
-
-    if(string == NULL)
     {
-        fclose(fp);
-        return NULL;
-    }        
+        return 0;
+    }
 
-    fread(string, 1, fsize, fp);
-    fclose(fp);
-    string[fsize] = 0;
-
-    return string;
-}
-
-void stringDestroy(char* string)
-{
-    if(string == NULL)
-        return;
-
-    free(string);
+    dr = opendir(path);   
+    if(dr == NULL)
+    { 
+        return 0; 
+    } 
+  
+    while((de = readdir(dr)) != NULL) 
+    {
+        if(strcmp(de->d_name, ".") == 0 || strcmp(de->d_name, "..") == 0) 
+            continue;
+        ++count;
+    }
+    closedir(dr);
+    return count;
 }
 
 char** getContent(char* path)
 {
     struct dirent *de;    
-    DIR *dr = opendir(path); 
-  
+    DIR *dr;
+    char **content;
+    char *buffer;
+    int count = countContent(path), index = 0;
+
+    dr = opendir(path);   
     if(dr == NULL)
     { 
         return NULL; 
-    } 
-  
-    while((de = readdir(dr)) != NULL) 
-            printf("%s\n", de->d_name); 
-  
-    closedir(dr);     
+    }
 
+    content = (char**)malloc((count + 1)*sizeof(char*));
+
+    if(content == NULL)
+    {
+        closedir(dr);
+        return NULL;
+    }
+
+    while((de = readdir(dr)) != NULL) 
+    {
+        if(strcmp(de->d_name,".")==0 || strcmp(de->d_name,"..")==0) 
+            continue;        
+        buffer = (char*)malloc(64*sizeof(char));
+        strcpy(buffer, path); 
+        strcpy(buffer + strlen(path), de->d_name);   
+        content[index] = buffer;
+        ++index;
+    }
+    content[index] = NULL;
+  
+    closedir(dr); 
+    return content;   
 }
 
 void freeContent(char** content)
 {
-    
+    int index = 0; 
+
+    if(content == NULL)
+    {
+        return;
+    } 
+
+    while(content[index] != NULL)
+    {
+        free(content[index]);
+        ++index;
+    }
+    free(content);
 }

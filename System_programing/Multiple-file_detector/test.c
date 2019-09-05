@@ -3,8 +3,19 @@
 
 int main()
 {
-    char* ptr;
-    ptr = fileToString("/home/sqrt7/Desktop/sqlink/System_programing/main_pipe.c");
-    printf("%s", ptr);
+    char **content;
+    int index = 0; 
+
+    content = getContent("/home/sqrt7/Desktop/sqlink/System_programing/");
+
+    while(content[index] != NULL)
+    {
+        printf("%s\n", content[index]);
+        printf("%d\n", isFile(content[index]));
+        ++index;
+    }
+
+    freeContent(content);
+
     return 0;
 }
