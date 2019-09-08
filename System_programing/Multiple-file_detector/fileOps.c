@@ -86,20 +86,3 @@ char** getContent(char* path)
     closedir(dr); 
     return content;   
 }
-
-void freeContent(char** content)
-{
-    int index = 0; 
-
-    if(content == NULL)
-    {
-        return;
-    } 
-
-    while(content[index] != NULL)
-    {
-        free(content[index]);
-        ++index;
-    }
-    free(content);
-}

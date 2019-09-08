@@ -40,6 +40,7 @@ static void fileScan(char* path, HashTable* hashTable)
         }
         ++index;
     }
+    free(content);
 }
 
 void findDup(char* path)

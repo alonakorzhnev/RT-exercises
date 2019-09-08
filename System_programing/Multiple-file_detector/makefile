@@ -4,7 +4,7 @@ aprog : findDup.o linkedList.o hashTable.o fileOps.o md5.o initDest.o
 	gcc -o aprog findDup.o hashTable.o linkedList.o fileOps.o md5.o initDest.o -lcrypto
 
 findDup.o : findDup.c findDup.h fileOps.h md5.h hashTable.h initDest.h
-	gcc -c $(CFLAGS) findDup.c findDup.h fileOps.h md5.h hashTable.h initDest.h
+	gcc -c $(CFLAGS) findDup.c
 
 fileOps.o : fileOps.c fileOps.h
 	gcc -c $(CFLAGS) fileOps.c
