@@ -5,7 +5,10 @@ aprog : findDup.o linkedList.o hashTable.o fileOps.o md5.o initDest.o
 
 findDup.o : findDup.c findDup.h fileOps.h md5.h hashTable.h initDest.h
 	gcc -c $(CFLAGS) findDup.c
+<<<<<<< HEAD
 
+=======
+>>>>>>> 67b9fd911f9796ba30e7328d04d2ce8b22b8730c
 fileOps.o : fileOps.c fileOps.h
 	gcc -c $(CFLAGS) fileOps.c
 
