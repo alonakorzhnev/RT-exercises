@@ -7,6 +7,4 @@ int isDir(const char* path);
 
 char** getContent(char* path);
 
-void freeContent(char** content);
-
 #endif
