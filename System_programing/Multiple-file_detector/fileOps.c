@@ -85,8 +85,4 @@ char** getContent(char* path)
   
     closedir(dr); 
     return content;   
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 67b9fd911f9796ba30e7328d04d2ce8b22b8730c
