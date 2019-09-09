@@ -5,8 +5,14 @@ typedef struct wQueue wQueue;
 
 wQueue* createWQueue(int count);
 
-void readWQueue(wQueue *queue, void **readM);
+void* readWQueue(wQueue *queue);
 
-void writeWQueue(wQueue *queue, void *writeM);
+void writeWQueue(wQueue *queue, void *writeVal);
+
+int isEmpty(wQueue *queue);
+
+int isFull(wQueue *queue);
+
+void destroyWQueue(wQueue *queue);
 
 #endif
