@@ -4,8 +4,10 @@
 
 typedef struct Produser Produser;
 
-void createProdusers(wQueue *queuePC, wQueue *queueCP);
+pthread_t* createProdusers(wQueue *queuePC, wQueue *queueCP);
 
 void* produser(void *param);
+
+void joinProdusers(pthread_t *produsers);
 
 #endif

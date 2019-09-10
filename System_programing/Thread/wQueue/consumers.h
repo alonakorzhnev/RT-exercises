@@ -4,8 +4,10 @@
 
 typedef struct Consumer Consumer;
 
-void createConsumers(wQueue *queuePC, wQueue *queueCP);
+pthread_t* createConsumers(wQueue *queuePC, wQueue *queueCP);
 
 void* consumer(void *param);
+
+void killConsumers(pthread_t *consumers);
 
 #endif
