@@ -1,5 +1,20 @@
 #ifndef WQUEUE_H
 #define WQUEUE_H
+#include <semaphore.h>
+#include <pthread.h> 
+#include <unistd.h> 
+
+struct wQueue
+{
+    void **arr;
+    int read;
+    int write;
+    int size;
+    int count;
+    sem_t semEmpty;
+    sem_t semFull;
+    pthread_mutex_t lock; 
+};
 
 typedef struct wQueue wQueue;
 

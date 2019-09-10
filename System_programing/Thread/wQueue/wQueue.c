@@ -3,17 +3,7 @@
 #include <pthread.h> 
 #include <unistd.h> 
 #include <stdlib.h>
-
-struct wQueue
-{
-    void **arr;
-    int rHead;
-    int wTail;
-    int size;
-    sem_t semEmpty;
-    sem_t semFull;
-    pthread_mutex_t lock; 
-};
+#include <stdio.h>
 
 wQueue* createWQueue(int size)
 {
@@ -33,11 +23,12 @@ wQueue* createWQueue(int size)
     }
 
     queue->size = size;
-    queue->rHead = 0;
-    queue->wTail = 0;
+    queue->count = 0;
+    queue->read = 0;
+    queue->write = 0;
     sem_init(&queue->semEmpty, 0, size);
     sem_init(&queue->semFull, 0, 0);
-    queue->lock = PTHREAD_MUTEX_INITIALIZER;
+    pthread_mutex_init(&queue->lock, NULL);
 
     return queue;                                                                                                                             
 }
@@ -46,42 +37,43 @@ void* readWQueue(wQueue *queue)
 {
     void *readVal;
 
-    readVal = queue[queue->rHead];
-    queue->rHead = (queue->rHead + 1)%queue->size;
+    sem_wait(&(queue->semFull));
+    pthread_mutex_lock(&(queue->lock));
+
+    readVal = queue->arr[queue->read];  
+    (queue->read)++;
+    
+    if(queue->read == queue->size)
+    {
+        queue->read = 0;
+    }
+
+    pthread_mutex_unlock(&(queue->lock));
+    sem_post(&(queue->semEmpty));
 
     return readVal;
 }
 
 void writeWQueue(wQueue *queue, void *writeVal)
 {
-    queue[queue->wTail] = writeVal;
-    queue->wTail = (queue->wTail + 1)%queue->size;
-}
+    sem_wait(&(queue->semEmpty));
+    pthread_mutex_lock(&(queue->lock));   
 
-int isEmpty(wQueue *queue)
-{
-    return (queue->rHead == queue->wTail) ? 1 : 0;
-}
+    queue->arr[queue->write] = writeVal;    
+    (queue->write)++;
 
-int isFull(wQueue *queue)
-{
-    return ((queue->wTail + 1)%queue->size == queue->rHead) ? 1 : 0;
+    if(queue->write == queue->size)
+    {
+        queue->write = 0;
+    }
+
+    pthread_mutex_unlock(&(queue->lock));
+    sem_post(&(queue->semFull));
 }
 
 void destroyWQueue(wQueue *queue)
 {
-    int i;
-
-    if(queue == NULL)
-    {
-        return;
-    }
-
-    for(i = 0; i < queue->size; ++i)
-    {
-        free(queue->arr[i]);
-    }
-    free(arr);
+    free(queue->arr);
     free(queue);
 }
 
