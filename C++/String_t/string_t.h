@@ -39,9 +39,28 @@ public:
     char& operator[](size_t index);
     char operator[](size_t index) const;
 
+    static size_t getStringCount() {return stringCount;}
+
+    static bool getCaseSens() {return caseSens;}
+    static bool setCaseSens(bool flag) {bool temp = caseSens; caseSens = flag; return temp;}
+
+    static 
+    static
+
+    int getFirstIndex(char ch);
+    int getLastIndex(char ch);
+
+    String_t operator()(size_t start, size_t len);
+
 private:
     char* str;
-    int lenght;
+    size_t lenght;
+    size_t capacity;
+
+    static int capacityDef;
+    static bool caseSens;
+    static size_t stringCount;
+
     char* createFrom(const char* str);
     void stringMerge(char* s1, char* s2);
 };

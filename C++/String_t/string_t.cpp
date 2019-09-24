@@ -1,12 +1,33 @@
 #include "string_t.h"
 #include <string.h>
+#include <math.h>
 #define MAX_LEN 64
+
+int String_t::capacityDef = 8;
+bool String_t::caseSens = 0;
+int String_t::stringCount = 0;
 
 char *String_t::createFrom(const char *str)
 {
-    char *tmp = new char[strlen(str) + 1];
-    strcpy(tmp, str);
-    return tmp;
+    if(this->capacity == 0)
+    {
+        char *tmp = new char[capacityDef];
+        this->capacity = capacityDef;
+        return tmp;
+    }
+    else if((strlen(str) + 1) < this->capacity)
+    {
+        strcpy(tmp, str);
+        
+    }
+    else
+    {
+        size_t size = pow(2, ceil(log2(strlen(str) + 1)));
+        char *tmp = new char[size];
+        strcpy(tmp, str);
+        this->capacity = size;
+        return tmp;
+    }
 }
 
 void String_t::stringMerge(char* s1, char* s2)
@@ -175,5 +196,31 @@ istream& operator>>(istream& is, String_t& s)
     char str[MAX_LEN];
     is >> str;
     s.setString(str);
+}
+
+int String_t::getFirstIndex(char ch)
+{
+    for(int i = 0; i < this->lenght; i++)
+    {
+
+    }
+}
+
+int String_t::getLastIndex(char ch)
+{
+
+}
+
+String_t String_t::operator()(size_t start, size_t len)
+{
+    if(start < this->lenght)
+    {
+        char tmp[this->lenght];
+        strncpy(tmp, this->str + start, len);
+        return String_t(tmp);
+    }else
+    {
+        return String_t();
+    }    
 }
 
