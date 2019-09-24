@@ -2,9 +2,9 @@
 #include <string.h>
 #define MAX_LEN 64
 
-char* String_t::createFrom(const char* str)
+char *String_t::createFrom(const char *str)
 {
-    char* tmp = new char[strlen(str) + 1];
+    char *tmp = new char[strlen(str) + 1];
     strcpy(tmp, str);
     return tmp;
 }
