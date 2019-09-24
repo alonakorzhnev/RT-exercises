@@ -1,6 +1,6 @@
 #include "string_t.h"
 #include <string.h>
-#define MAX_SIZE 64
+#define MAX_LEN 64
 
 char *String_t::createFrom(const char *str)
 {
@@ -106,13 +106,12 @@ void String_t::toLower()
 
 void String_t::prepend(const char *str)
 {
-    char* tmp = new char[strlen(this->str) + strlen(str) + 1];
+    char tmp[MAX_LEN];
     strcpy(tmp, str);
     strcat(tmp, this->str);
     delete[] this->str;
-    this->str = createFrom(str);
+    this->str = createFrom(tmp);
     this->lenght = strlen(this->str);
-    delete[] tmp;
 }
 
 void String_t::prepend(const String_t &s)
@@ -122,13 +121,12 @@ void String_t::prepend(const String_t &s)
 
 String_t& String_t::operator+=(const char *str)
 {
-    char* tmp = new char[strlen(this->str) + strlen(str) + 1];
+    char tmp[MAX_LEN];
     strcpy(tmp, this->str);
     strcat(tmp, str);
     delete[] this->str;
-    this->str = createFrom(str);
+    this->str = createFrom(tmp);
     this->lenght = strlen(this->str);
-    delete[] tmp;
 }
 
 String_t& String_t::operator+=(const String_t &s)
@@ -173,12 +171,12 @@ bool String_t::contains(const char *str) const
 
 char& String_t::operator[](size_t index)
 {
-    return (index > 0 && index < this->lenght) ? this->str[index] : this->str[this->lenght];
+    return (index >= 0 && index < this->lenght) ? this->str[index] : this->str[this->lenght];
 }
 
 char String_t::operator[](size_t index) const
 {
-    return (index > 0 && index < this->lenght) ? this->str[index] : this->str[this->lenght];    
+    return (index >= 0 && index < this->lenght) ? this->str[index] : this->str[this->lenght];    
 }
 
 ostream& operator<<(ostream& os, const String_t& s)
@@ -189,7 +187,7 @@ ostream& operator<<(ostream& os, const String_t& s)
 
 istream& operator>>(istream& is, String_t& s)
 {
-    char str[MAX_SIZE];
+    char str[MAX_LEN];
     is >> str;
     s.setString(str);
 }
