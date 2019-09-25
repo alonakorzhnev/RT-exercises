@@ -44,13 +44,13 @@ public:
     static bool getCaseSens() {return caseSens;}
     static bool setCaseSens(bool flag) {bool temp = caseSens; caseSens = flag; return temp;}
 
-    static 
-    static
+    static int getDefCapacity() {return capacityDef;}
+    static int setDefCapacity(int cap) {int temp = capacityDef; capacityDef = cap; return capacityDef;}
 
-    int getFirstIndex(char ch);
-    int getLastIndex(char ch);
+    int getFirstIndex(char ch) const;
+    int getLastIndex(char ch) const;
 
-    String_t operator()(size_t start, size_t len);
+    String_t operator()(size_t start, size_t len) const;
 
 private:
     char* str;
