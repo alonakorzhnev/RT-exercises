@@ -22,12 +22,7 @@ MemPage_t::MemPage_t(size_t cap)
 
 size_t MemPage_t::read(void* buffer, size_t size)
 {
-    if(buffer == 0 || size == 0)
-    {
-        return 0;
-    }
-
-    return readData(buffer, size);
+    return read(buffer, size, currPosition);
 }
 
 size_t MemPage_t::read(void* buffer, size_t size, size_t pos)
@@ -38,34 +33,6 @@ size_t MemPage_t::read(void* buffer, size_t size, size_t pos)
     }
 
     setCurrPosition(pos);
-
-    return readData(buffer, size);
-}
-
-size_t MemPage_t::write(const void* buffer, size_t size)
-{
-    if(buffer == 0 || size == 0)
-    {
-        return 0;
-    }
-
-    return writeData(buffer, size);
-}
-
-size_t MemPage_t::write(const void* buffer, size_t size, size_t pos)
-{
-    if(buffer == 0 || size == 0)
-    {
-        return 0;
-    }
-
-    setCurrPosition(pos);
-
-    return writeData(buffer, size);
-}
-
-size_t MemPage_t::readData(void* buffer, size_t size)
-{
     size_t readCount = actualSize - currPosition;
 
     if(readCount < size)
@@ -79,8 +46,19 @@ size_t MemPage_t::readData(void* buffer, size_t size)
     return size;
 }
 
-size_t MemPage_t::writeData(const void* buffer, size_t size)
+size_t MemPage_t::write(const void* buffer, size_t size)
 {
+    return write(buffer, size, currPosition);
+}
+
+size_t MemPage_t::write(const void* buffer, size_t size, size_t pos)
+{
+    if(buffer == 0 || size == 0)
+    {
+        return 0;
+    }
+
+    setCurrPosition(pos);
     size_t writeCount = capacity - currPosition;
 
     if(size > writeCount)
@@ -89,20 +67,15 @@ size_t MemPage_t::writeData(const void* buffer, size_t size)
     }
     
     memcpy(stream + currPosition, buffer, size);
-
-    if((currPosition + size) > actualSize)
-    {
-        actualSize = currPosition + size;
-    }
+    setActualSize(size);
+    setCurrPosition(currPosition + size);
 
     if(actualSize == capacity)
     {
         memFull = true;
     }
-    
-    setCurrPosition(currPosition + size);
 
-    return size;
+    return size;    
 }
 
 

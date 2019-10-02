@@ -8,7 +8,7 @@ using namespace std;
 class MemPool_t : public MemManager_t
 {
     public:
-        ~MemPool_t();
+        virtual ~MemPool_t();
         MemPool_t();
 
         virtual size_t read(void* buffer, size_t size);
@@ -17,13 +17,13 @@ class MemPool_t : public MemManager_t
         virtual size_t write(const void* buffer, size_t size);
         virtual size_t write(const void* buffer, size_t size, size_t pos);
 
+        static size_t getDefCapacity() {return MemPage_t::getDefCapacity();}
+        static size_t setDefCapacity(size_t cap) {MemPage_t::setDefCapacity(cap);}
+
     private:
         MemPool_t(const MemPool_t& mp);
         MemPool_t& operator=(const MemPool_t& mp);
 
         vector<MemPage_t*> pool;
         size_t pageSize;
-
-        size_t readData(void* buffer, size_t size);
-        size_t writeData(const void* buffer, size_t size);
 };

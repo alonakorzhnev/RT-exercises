@@ -6,7 +6,7 @@ using namespace std;
 class MemPage_t : public MemManager_t
 {
     public:
-        ~MemPage_t();
+        virtual ~MemPage_t();
         MemPage_t();
         MemPage_t(size_t cap);
 
@@ -28,7 +28,4 @@ class MemPage_t : public MemManager_t
         char* stream;
         size_t capacity;
         static size_t defaultCap;
-
-        size_t readData(void* buffer, size_t size);
-        size_t writeData(const void* buffer, size_t size);
 };

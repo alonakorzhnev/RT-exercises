@@ -9,12 +9,20 @@ MemManager_t::MemManager_t()
 
 void MemManager_t::setCurrPosition(size_t pos)
 {
-    if(pos > actualSize)
+    if(pos >= actualSize)
     {
         currPosition = actualSize;
     }
     else
     {
-        currPosition = pos;
+        throw string("Invalid position");
     }    
+}
+
+void MemManager_t::setActualSize(size_t writeCount)
+{
+    if((currPosition + writeCount) > actualSize)
+    {
+        actualSize = currPosition + writeCount;
+    }
 }

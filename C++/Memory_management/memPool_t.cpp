@@ -17,12 +17,7 @@ MemPool_t::MemPool_t()
 
 size_t MemPool_t::read(void* buffer, size_t size)
 {
-    if(buffer == 0 || size == 0)
-    {
-        return 0;
-    }
-
-    return readData(buffer, size);
+    return read(buffer, size, currPosition);
 }
 
 size_t MemPool_t::read(void* buffer, size_t size, size_t pos)
@@ -33,50 +28,24 @@ size_t MemPool_t::read(void* buffer, size_t size, size_t pos)
     }
 
     setCurrPosition(pos);
-
-    return readData(buffer, size);
-}
-
-size_t MemPool_t::write(const void* buffer, size_t size)
-{
-    if(buffer == 0 || size == 0)
-    {
-        return 0;
-    }
-
-    return writeData(buffer, size);
-}
-
-size_t MemPool_t::write(const void* buffer, size_t size, size_t pos)
-{
-    if(buffer == 0 || size == 0)
-    {
-        return 0;
-    }
-
-    setCurrPosition(pos);
-
-    return writeData(buffer, size);
-}
-
-size_t MemPool_t::readData(void* buffer, size_t size)
-{
     size_t pageIndex = currPosition/pageSize;
-    size_t readSize = actualSize - currPosition, readCount, buffPos = 0;
+    size_t tempSize, readCount, buffPos = 0;
 
-    if(readSize < size)
+    if(size > (actualSize - currPosition))
     {
-        size = readSize;
+        size = actualSize - currPosition;
     }
-
+    tempSize = size;
+        
     while(true)
     {
         pool[pageIndex]->setCurrPosition(currPosition%pageSize);
-        readCount = pool[pageIndex]->read((char*)buffer + buffPos, readSize);
+        readCount = pool[pageIndex]->read((char*)buffer + buffPos, tempSize);
         setCurrPosition(currPosition + readCount);
-        if(readCount != readSize)
+
+        if(readCount != tempSize)
         {
-            readSize -= readCount;
+            tempSize -= readCount;
             buffPos += readCount;
             pageIndex++;
         }
@@ -89,15 +58,29 @@ size_t MemPool_t::readData(void* buffer, size_t size)
     return size;
 }
 
-size_t MemPool_t::writeData(const void* buffer, size_t size)
+size_t MemPool_t::write(const void* buffer, size_t size)
 {
+    return write(buffer, size, currPosition);
+}
+
+size_t MemPool_t::write(const void* buffer, size_t size, size_t pos)
+{
+    if(buffer == 0 || size == 0)
+    {
+        return 0;
+    }
+
+    setCurrPosition(pos);
     size_t pageIndex = currPosition/pageSize;
     size_t writeCount, buffPos = 0, tempSize = size;
 
     while(true)
     {
+        pool[pageIndex]->setCurrPosition(currPosition%pageSize);
         writeCount = pool[pageIndex]->write((char*)buffer + buffPos, tempSize);
+        setActualSize(writeCount);
         setCurrPosition(currPosition + writeCount); 
+
         if(writeCount != tempSize)
         {
             MemPage_t* pg = new MemPage_t;
@@ -111,11 +94,6 @@ size_t MemPool_t::writeData(const void* buffer, size_t size)
         {
             break;
         }
-    }  
-
-    if((currPosition + size) > actualSize)
-    {
-        actualSize = currPosition + size;
     }
     
     return size;
