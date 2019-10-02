@@ -9,23 +9,23 @@ class MemManager_t
 
         size_t getCurrPosition() const {return currPosition;}
         void setCurrPosition(size_t pos);
-        bool getMemStatus() const {return memStatus;}
+        bool isFull() const {return memFull;}
         size_t getActualSize() const {return actualSize;}
 
-        virtual size_t readData(void* buffer, size_t size) {return 0;}
-        virtual size_t readData(void* buffer, size_t size, size_t pos) {return 0;}
+        virtual size_t read(void* buffer, size_t size) {return 0;}
+        virtual size_t read(void* buffer, size_t size, size_t pos) {return 0;}
 
-        virtual size_t writeData(const void* buffer, size_t size) {return 0;}
-        virtual size_t writeData(const void* buffer, size_t size, size_t pos) {return 0;}
+        virtual size_t write(const void* buffer, size_t size) {return 0;}
+        virtual size_t write(const void* buffer, size_t size, size_t pos) {return 0;}
 
     protected:
-        virtual ~MemManager_t() {}      
+        virtual ~MemManager_t() {}   
+
+        bool memFull;
+        size_t actualSize;
+        size_t currPosition;   
 
     private:
         MemManager_t(const MemManager_t& mm) {}
-        MemManager_t& operator=(const MemManager_t& mm) {}
-
-        bool memStatus;
-        size_t actualSize;
-        size_t currPosition;
+        MemManager_t& operator=(const MemManager_t& mm) {}        
 };
