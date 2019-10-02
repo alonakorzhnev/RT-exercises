@@ -1,6 +1,7 @@
 #include "memPage_t.h"
 #include "memPool_t.h"
 #include <iostream>
+#include <cstring>
 using namespace std;
 
 void test(MemManager_t* m);
@@ -35,9 +36,6 @@ int main()
 
 void test(MemManager_t* m)
 {
-
-    char buffer[32];
-    memset(&buffer, '\0', sizeof(buffer));
     size_t count, option, position, size;
     bool cont = true;
 
@@ -53,66 +51,69 @@ void test(MemManager_t* m)
 
         switch(option)
         {
-        case 1:
-            cout << "Enter string to write: " << endl;
-            cin >> buffer; 
-            cout << "Enter size and position: " << endl;
-            cin >> size >> position;
-            count = m->write(buffer, size, position);
-            for(int i = 0; i < count; ++i)
+            case 1:
             {
-                cout << buffer[i];
+                char buffer[32];
+                memset(&buffer, '\0', 32);
+                cout << "Enter string to write: " << endl;
+                cin >> buffer; 
+                cout << "Enter size and position: " << endl;
+                cin >> size >> position;
+                count = m->write(buffer, size, position);
+                cout << buffer << endl;
+                break;
             }
-            break;
-
-        case 2:
-            cout << "Enter string to write: " << endl;
-            cin >> buffer; 
-            cout << "Enter size: " << endl;
-            cin >> size;
-            count = m->write(buffer, size);
-            for(int i = 0; i < count; ++i)
+            case 2:
             {
-                cout << buffer[i];
+                char buffer[32];
+                memset(&buffer, '\0', 32);
+                cout << "Enter string to write: " << endl;
+                cin >> buffer; 
+                cout << "Enter size: " << endl;
+                cin >> size;
+                count = m->write(buffer, size);
+                cout << buffer << endl;
+                break;
             }
-            break;
-
-        case 3: 
-            cout << "Enter size and position: " << endl;
-            cin >> size >> position;
-            count = m->read(buffer, size, position);
-            for(int i = 0; i < count; ++i)
+            case 3:
             {
-                cout << buffer[i];
+                char buffer[32];
+                memset(&buffer, '\0', 32);
+                cout << "Enter size and position: " << endl;
+                cin >> size >> position;
+                count = m->read(buffer, size, position);
+                cout << buffer << endl;
+                break;
             }
-            break;
-
-        case 4:
-            cout << "Enter size and position: " << endl;
-            cin >> size;
-            count = m->read(buffer, size);
-            for(int i = 0; i < count; ++i)
+            case 4:
             {
-                cout << buffer[i];
+                char buffer[32];
+                memset(&buffer, '\0', 32);
+                cout << "Enter size and position: " << endl;
+                cin >> size;
+                count = m->read(buffer, size);
+                cout << buffer << endl;
+                break;
             }
-            break;
-
-        case 5:
-            cout << "Enter position: " << endl;
-            cin >> position;
-            try
+            case 5:
             {
-                m->setCurrPosition(position);
+                cout << "Enter position: " << endl;
+                cin >> position;
+                try
+                {
+                    m->setCurrPosition(position);
+                }
+                catch(string e)
+                {
+                    cerr << e << endl;
+                }
+                break;
             }
-            catch(string e)
+            default:
             {
-                cerr << e << endl;
+                cont = false;
+                break;
             }
-            break;
-        
-        default:
-            cont = false;
-            break;
         }
     }    
 }
