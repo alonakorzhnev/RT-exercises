@@ -58,7 +58,17 @@ void test(MemManager_t* m)
                 cin >> buffer; 
                 cout << "Enter size and position: " << endl;
                 cin >> size >> position;
-                count = m->write(buffer, size, position);
+
+                try
+                {
+                    count = m->write(buffer, size, position);
+                }
+                catch(string e)
+                {
+                    cerr << e << endl;
+                    break;
+                }
+
                 break;
             }
             case 2:
@@ -68,7 +78,17 @@ void test(MemManager_t* m)
                 cin >> buffer; 
                 cout << "Enter size: " << endl;
                 cin >> size;
-                count = m->write(buffer, size);
+
+                try
+                {
+                    count = m->write(buffer, size);
+                }
+                catch(string e)
+                {
+                    cerr << e << endl;
+                    break;
+                }
+
                 break;
             }
             case 3:
@@ -76,8 +96,18 @@ void test(MemManager_t* m)
                 char buffer[32];
                 memset(&buffer, '\0', 32);
                 cout << "Enter size and position: " << endl;
-                cin >> size >> position;
-                count = m->read(buffer, size, position);
+                cin >> size >> position;                
+
+                try
+                {
+                    count = m->read(buffer, size, position);
+                }
+                catch(string e)
+                {
+                    cerr << e << endl;
+                    break;
+                }
+
                 cout << buffer << endl;
                 break;
             }
@@ -87,7 +117,17 @@ void test(MemManager_t* m)
                 memset(&buffer, '\0', 32);
                 cout << "Enter size: " << endl;
                 cin >> size;
-                count = m->read(buffer, size);
+
+                try
+                {
+                    count = m->read(buffer, size);
+                }
+                catch(string e)
+                {
+                    cerr << e << endl;
+                    break;
+                }
+                
                 cout << buffer << endl;
                 break;
             }

@@ -83,7 +83,7 @@ size_t MemPool_t::write(const void* buffer, size_t size, size_t pos)
 
         if(writeCount != tempSize)
         {
-            MemPage_t* pg = new MemPage_t;
+            MemPage_t* pg = new MemPage_t(pageSize);
             pool.push_back(pg);
 
             tempSize -= writeCount;
