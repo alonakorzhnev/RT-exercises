@@ -14,7 +14,7 @@ int main()
     cout << "Choose object: 1-MemPage, 2-MemPool" << endl;
     cin >> option;
 
-    switch (option)
+    switch(option)
     {
     case 1:
         mptr = new MemPage_t;
@@ -54,25 +54,21 @@ void test(MemManager_t* m)
             case 1:
             {
                 char buffer[32];
-                memset(&buffer, '\0', 32);
                 cout << "Enter string to write: " << endl;
                 cin >> buffer; 
                 cout << "Enter size and position: " << endl;
                 cin >> size >> position;
                 count = m->write(buffer, size, position);
-                cout << buffer << endl;
                 break;
             }
             case 2:
             {
                 char buffer[32];
-                memset(&buffer, '\0', 32);
                 cout << "Enter string to write: " << endl;
                 cin >> buffer; 
                 cout << "Enter size: " << endl;
                 cin >> size;
                 count = m->write(buffer, size);
-                cout << buffer << endl;
                 break;
             }
             case 3:
@@ -89,7 +85,7 @@ void test(MemManager_t* m)
             {
                 char buffer[32];
                 memset(&buffer, '\0', 32);
-                cout << "Enter size and position: " << endl;
+                cout << "Enter size: " << endl;
                 cin >> size;
                 count = m->read(buffer, size);
                 cout << buffer << endl;

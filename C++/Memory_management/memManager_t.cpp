@@ -9,13 +9,14 @@ MemManager_t::MemManager_t()
 
 void MemManager_t::setCurrPosition(size_t pos)
 {
-    if(pos >= actualSize)
+    if(pos > actualSize)
     {
-        currPosition = actualSize;
+        throw string("Invalid position");
+        //currPosition = actualSize;
     }
     else
     {
-        throw string("Invalid position");
+        currPosition = pos;
     }    
 }
 
