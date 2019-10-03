@@ -12,10 +12,10 @@ class Street_t
         ~Street_t();
         Street_t();
         Street_t(const Street_t& s);
-        Street_t& operator=(const Street_t& s);
+        Street_t<SID, BID>& operator=(const Street_t& s);
 
-        SID getStreetID() const;
-        void setStreetID(SID newID);
+        const SID& getStreetID() const;
+        void setStreetID(const SID& newID);
         void addBuilding2Street(const Buiding_t<BID>& b);
         const Buiding_t<BID>& getBuilding(BID id) const;
 
@@ -42,10 +42,10 @@ Street_t<SID, BID>& Street_t<SID, BID>::operator=(const Street_t<SID, BID>& s)
 }
 
 template <class SID, class BID>
-SID Street_t<SID, BID>::getStreetID() const {return id;}
+const SID& Street_t<SID, BID>::getStreetID() const {return id;}
 
 template <class SID, class BID>
-void Street_t<SID, BID>::setStreetID(SID newID) {id = newID;}
+void Street_t<SID, BID>::setStreetID(const SID& newID) {id = newID;}
 
 template <class SID, class BID>
 void Street_t<SID, BID>::addBuilding2Street(const Buiding_t<BID>& b) 

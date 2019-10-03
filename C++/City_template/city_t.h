@@ -13,8 +13,8 @@ class City_t
         City_t(const City_t& c);
         City_t& operator=(const City_t& c);
 
-        CID getCityID() const;
-        void setCityID(CID newID);
+        const CID& getCityID() const;
+        void setCityID(const CID& newID);
         void addStreet2City(const Street_t<SID, BID>& s);
         const Street_t<SID, BID>& getStreet(SID id) const;
 
@@ -41,10 +41,10 @@ City_t<CID, SID, BID>& City_t<CID, SID, BID>::operator=(const City_t& c)
 }
 
 template <class CID, class SID, class BID>
-CID City_t<CID, SID, BID>::getCityID() const {return id;}
+const CID& City_t<CID, SID, BID>::getCityID() const {return id;}
 
 template <class CID, class SID, class BID>
-void City_t<CID, SID, BID>::setCityID(CID newID) {id = newID;}
+void City_t<CID, SID, BID>::setCityID(const CID& newID) {id = newID;}
 
 template <class CID, class SID, class BID>
 void City_t<CID, SID, BID>::addStreet2City(const Street_t<SID, BID>& s)
