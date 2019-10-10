@@ -26,7 +26,7 @@ class tContainer_t
         void removeAll();
         void deleteByValue(const T& t);
         void deleteAll();
-        T* operator[](size_t index);
+        T* operator[](size_t index) const;
 
     private:
         tContainer_t(const tContainer_t& c);
@@ -132,7 +132,7 @@ void tContainer_t<T, Container>::deleteAll()
 }
 
 template <class T, class Container>
-T* tContainer_t<T, Container>::operator[](size_t index)
+T* tContainer_t<T, Container>::operator[](size_t index) const
 {
     if(index < container.size())
     {
