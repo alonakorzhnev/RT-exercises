@@ -72,17 +72,10 @@ void testVector()
         {
             cout << "Enter value: " << endl;
             int value;
-            cin >> value;
+            cin >> value; 
             
-            try
-            {
-                int* findValue = iVect.findByValue(value);
-                cout << *findValue << endl;
-            }
-            catch(string e)
-            {
-                cerr << e << endl;
-            }
+            int* findValue = iVect.findByValue(value);
+            cout << *findValue << endl;            
 
             break;
         }
@@ -91,16 +84,9 @@ void testVector()
             cout << "Enter value: " << endl;
             int value;
             cin >> value;
-            
-            try
-            {
-                int* removedValue = iVect.removeByValue(value);
-                cout << *removedValue << endl;
-            }
-            catch(string e)
-            {
-                cerr << e << endl;
-            }
+
+            int* removedValue = iVect.removeByValue(value);
+            cout << *removedValue << endl;
 
             break;
         }
@@ -112,15 +98,8 @@ void testVector()
             cout << "Enter value: " << endl;
             int value;
             cin >> value;
-            
-            try
-            {
-                iVect.deleteByValue(value);
-            }
-            catch(string e)
-            {
-                cerr << e << endl;
-            }
+
+            iVect.deleteByValue(value);
 
             break;
         }
@@ -132,14 +111,8 @@ void testVector()
             cout << "Enter index: " << endl;
             int index;
             cin >> index;  
-            try
-            {
-                cout << *iVect[index] << endl;
-            }
-            catch(string e)
-            {
-                cerr << e << endl;
-            }
+
+            cout << *iVect[index] << endl;
 
             break;
         }       
@@ -190,15 +163,8 @@ void testList()
             int value;
             cin >> value;
             
-            try
-            {
-                int* findValue = iList.findByValue(value);
-                cout << *findValue << endl;
-            }
-            catch(string e)
-            {
-                cerr << e << endl;
-            }
+            int* findValue = iList.findByValue(value);
+            cout << *findValue << endl;
 
             break;
         }
@@ -207,17 +173,10 @@ void testList()
             cout << "Enter value: " << endl;
             int value;
             cin >> value;
-            
-            try
-            {
-                int* removedValue = iList.removeByValue(value);
-                cout << *removedValue << endl;
-            }
-            catch(string e)
-            {
-                cerr << e << endl;
-            }
 
+            int* removedValue = iList.removeByValue(value);
+            cout << *removedValue << endl;
+            
             break;
         }
         case 8:
@@ -229,14 +188,7 @@ void testList()
             int value;
             cin >> value;
             
-            try
-            {
-                iList.deleteByValue(value);
-            }
-            catch(string e)
-            {
-                cerr << e << endl;
-            }
+            iList.deleteByValue(value);
 
             break;
         }
@@ -248,14 +200,8 @@ void testList()
             cout << "Enter index: " << endl;
             int index;
             cin >> index;  
-            try
-            {
-                cout << *iList[index] << endl;
-            }
-            catch(string e)
-            {
-                cerr << e << endl;
-            }
+            
+            cout << *iList[index] << endl;
 
             break;
         }       

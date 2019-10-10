@@ -18,7 +18,7 @@ class tContainer_t
 
         bool isEmpty() const;
         size_t getSize() const;
-        void pushBack(T* t);
+        void pushBack(const T* t);
         T* getFirst() const;
         T* getLast() const;
         T* findByValue(const T& t) const;
@@ -36,9 +36,6 @@ class tContainer_t
 
         typedef typename Container::iterator iter_t;
         typedef typename Container::const_iterator iterConst_t;
-        
-        T* getByIndex(const vector<T*>& l, size_t index);
-        T* getByIndex(const list<T*>& l, size_t index);
 };
 
 
@@ -55,20 +52,28 @@ inline size_t tContainer_t<T, Container>::getSize() const
 }
 
 template <class T, class Container>
-inline void tContainer_t<T, Container>::pushBack(T* t)
+inline void tContainer_t<T, Container>::pushBack(const T* t)
 {
-    container.push_back(t);
+    container.push_back((T*)t);
 }
 
 template <class T, class Container>
-inline T* tContainer_t<T, Container>::getFirst() const
+T* tContainer_t<T, Container>::getFirst() const
 {
+    if(isEmpty())
+    {
+        return 0;
+    }
     return container.front();
 }
 
 template <class T, class Container>
-inline T* tContainer_t<T, Container>::getLast() const
+T* tContainer_t<T, Container>::getLast() const
 {
+    if(isEmpty())
+    {
+        return 0;
+    }
     return container.back();
 }
 
@@ -77,14 +82,7 @@ T* tContainer_t<T, Container>::findByValue(const T& t) const
 {
     iterConst_t it = find_if(container.begin(), container.end(), typename FindValue<T>::FindValue(t));
 
-    if(it != container.end())
-    {
-        return *it;
-    }
-    else
-    {
-        throw string("There is no such element");
-    } 
+    return (it != container.end()) ? *it : 0;
 }
 
 template <class T, class Container>
@@ -100,7 +98,7 @@ T* tContainer_t<T, Container>::removeByValue(const T& t)
     }
     else
     {
-        throw string("There is no such element");
+        return 0;
     }    
 }
 
@@ -120,10 +118,6 @@ void tContainer_t<T, Container>::deleteByValue(const T& t)
         delete *it;
         container.erase(it);
     }
-    else
-    {
-        throw string("There is no such element");
-    }
 }
 
 template <class T, class Container>
@@ -142,21 +136,17 @@ T* tContainer_t<T, Container>::operator[](size_t index)
 {
     if(index < container.size())
     {
-        return getByIndex(container, index);
+        if(typeid(Container) == typeid(vector<T*>))
+        {
+            return (*(vector<T*>*)&container)[index];
+        }
+        else if(typeid(Container) == typeid(list<T*>))
+        {
+            iterConst_t it = container.begin();
+            advance(it, index);
+            return *it;
+        }
     }
 
-    throw string("Invalid index");        
-}
-
-template <class T, class Container>
-T* tContainer_t<T, Container>::getByIndex(const vector<T*>& v, size_t index) {
-    return v[index];
-}
-
-template <class T, class Container>
-T* tContainer_t<T, Container>::getByIndex(const list<T*>& l, size_t index) 
-{
-    iterConst_t it = l.begin();
-    advance(it, index);
-    return *it;
+    return 0;        
 }
