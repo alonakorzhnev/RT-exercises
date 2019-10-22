@@ -1,13 +1,16 @@
 #include "asciiIO_t.h"
 
-VirtIO_t& VirtIO_t::operator>>(char& val)
+VirtIO_t& AsciiIO_t::operator>>(char& val)
 {
-    fin(val)
+    fileToVal<char>(val, "%c");
 }
 
-VirtIO_t& VirtIO_t::operator<<(char val) {}
+VirtIO_t& AsciiIO_t::operator<<(char val)
+{
+    valToFile<char>(val, "%c");
+}
 
-VirtIO_t& VirtIO_t::operator>>(unsigned char& val) {}
+/*VirtIO_t& VirtIO_t::operator>>(unsigned char& val) {}
 VirtIO_t& VirtIO_t::operator<<(unsigned char val) {}
 
 VirtIO_t& VirtIO_t::operator>>(short& val) {}
@@ -32,4 +35,4 @@ VirtIO_t& VirtIO_t::operator>>(float& val) {}
 VirtIO_t& VirtIO_t::operator<<(float val) {}
 
 VirtIO_t& VirtIO_t::operator>>(double& val) {}
-VirtIO_t& VirtIO_t::operator<<(double val) {}
+VirtIO_t& VirtIO_t::operator<<(double val) {}*/

@@ -20,18 +20,19 @@ VirtIO_t::VirtIO_t(const string& name, const string& access)
 
 void VirtIO_t::open()
 {
-    if()
+    m_fp = fopen(m_name.c_str(), m_access.c_str());
+    if(!m_fp)
     {
-
+        m_status = cant_open_file_e;
     }
 }
 
 void VirtIO_t::close()
 {
-
+    fclose(m_fp);
 }
 
-size_t VirtIO_t::getFileLenght() const
+size_t VirtIO_t::getFileLenght()
 {
     size_t lenght = 0;
     if(m_fp)
@@ -57,7 +58,7 @@ bool VirtIO_t::validRead()
     bool isValid = true;
     if(!m_fp || m_access != "r" || m_access != "r+")
     {
-        m_status = readErr_e;
+        m_status = bad_access_e;
         isValid = false;
     }
     return isValid;
@@ -68,7 +69,7 @@ bool VirtIO_t::validWrite()
     bool isValid = true;
     if(!m_fp || m_access != "w" || m_access != "w+")
     {
-        m_status = writeErr_e;
+        m_status = bad_access_e;
         isValid = false;
     }
     return isValid;
