@@ -19,7 +19,7 @@ class VirtIO_t
         const string& getName() const { return m_name; }
         const string& getAccess() const { return m_access; }
 
-        size_t getFileLenght();
+        size_t getFileLenght() const;
 
         size_t getPosition() const { return m_position; }
         void setPosition(size_t position);
