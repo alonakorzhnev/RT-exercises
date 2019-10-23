@@ -24,6 +24,7 @@ void VirtIO_t::open()
     if(!m_fp)
     {
         m_status = cant_open_file_e;
+        throw string("Can't open file");
     }
 }
 
