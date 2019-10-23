@@ -2,9 +2,6 @@
 
 VirtIO_t::VirtIO_t()
 {
-    m_name = "";
-    m_access = "";
-    m_position = 0;
     m_status = ok_e;
     m_fp = 0;
 }
@@ -13,24 +10,35 @@ VirtIO_t::VirtIO_t(const string& name, const string& access)
 {
     m_name = name;
     m_access = access;
-    m_position = 0;
     m_status = ok_e;
     m_fp = 0;
 }
 
 void VirtIO_t::open()
 {
-    m_fp = fopen(m_name.c_str(), m_access.c_str());
-    if(!m_fp)
+    if(m_access == "r" || m_access == "r+" || m_access == "w" || m_access == "w+")
     {
-        m_status = cant_open_file_e;
-        throw string("Can't open file");
+        m_fp = fopen(m_name.c_str(), m_access.c_str());
+        if(!m_fp)
+        {
+            m_status = cant_open_file_e;
+            throw string("Can't open file");
+        }
     }
+    else
+    {
+        m_status = bad_access_e;
+        throw string("Bad access");
+    }    
 }
 
 void VirtIO_t::close()
 {
-    fclose(m_fp);
+    if(m_fp)
+    {
+        fclose(m_fp);
+        m_fp = 0;
+    }
 }
 
  size_t VirtIO_t::getPosition() const
@@ -60,28 +68,15 @@ void VirtIO_t::setPosition(size_t position)
     if(m_fp)
     {
         fseek(m_fp, position, SEEK_SET);
-        m_position = position;
     }
 }
 
 bool VirtIO_t::validRead()
 {
-    bool isValid = true;
-    if(!m_fp || m_access != "r" || m_access != "r+")
-    {
-        m_status = bad_access_e;
-        isValid = false;
-    }
-    return isValid;
+    return (!m_fp || (m_access != "r" && m_access != "r+" && m_access != "w+")) ? false : true;
 }
 
 bool VirtIO_t::validWrite()
 {
-    bool isValid = true;
-    if(!m_fp || m_access != "w" || m_access != "w+")
-    {
-        m_status = bad_access_e;
-        isValid = false;
-    }
-    return isValid;
+    return (!m_fp || (m_access != "w" && m_access != "w+" && m_access != "r+")) ? false : true;
 }

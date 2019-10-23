@@ -1,50 +1,77 @@
 #include "binIO_t.h"
 
-VirtIO_t& BinIO_t::operator>>(char& val)
+BinIO_t& BinIO_t::operator>>(int& val)
 {
-    fileToVal<char>(val);
+    return fileToVal<int>(val);
 }
 
-VirtIO_t& BinIO_t::operator<<(char val)
+BinIO_t& BinIO_t::operator<<(int val)
 {
-    valToFile<char>(val);
+    return valToFile<int>(val);
 }
 
-/*VirtIO_t& VirtIO_t::operator>>(short& val) {}
-VirtIO_t& VirtIO_t::operator<<(short val) {}
+/*BinIO_t& BinIO_t::operator>>(short& val) {}
+BinIO_t& BinIO_t::operator<<(short val) {}
         
-VirtIO_t& VirtIO_t::operator>>(unsigned short& val) {}
-VirtIO_t& VirtIO_t::operator<<(unsigned short val) {}
+BinIO_t& BinIO_t::operator>>(unsigned short& val) {}
+BinIO_t& BinIO_t::operator<<(unsigned short val) {}
 
-VirtIO_t& VirtIO_t::operator>>(int& val) {}
-VirtIO_t& VirtIO_t::operator<<(int val) {}
+BinIO_t& BinIO_t::operator>>(int& val) {}
+BinIO_t& BinIO_t::operator<<(int val) {}
 
-VirtIO_t& VirtIO_t::operator>>(unsigned int& val) {}
-VirtIO_t& VirtIO_t::operator<<(unsigned int val) {}
+BinIO_t& BinIO_t::operator>>(unsigned int& val) {}
+BinIO_t& BinIO_t::operator<<(unsigned int val) {}
 
-VirtIO_t& VirtIO_t::operator>>(long& val) {}
-VirtIO_t& VirtIO_t::operator<<(long val) {}
+BinIO_t& BinIO_t::operator>>(long& val) {}
+BinIO_t& BinIO_t::operator<<(long val) {}
 
-VirtIO_t& VirtIO_t::operator>>(unsigned long& val) {}
-VirtIO_t& VirtIO_t::operator<<(unsigned long val) {}
+BinIO_t& BinIO_t::operator>>(unsigned long& val) {}
+BinIO_t& BinIO_t::operator<<(unsigned long val) {}
 
-VirtIO_t& VirtIO_t::operator>>(float& val) {}
-VirtIO_t& VirtIO_t::operator<<(float val) {}
+BinIO_t& BinIO_t::operator>>(float& val) {}
+BinIO_t& BinIO_t::operator<<(float val) {}
 
-VirtIO_t& VirtIO_t::operator>>(double& val) {}
-VirtIO_t& VirtIO_t::operator<<(double val) {}*/
+BinIO_t& BinIO_t::operator>>(double& val) {}
+BinIO_t& BinIO_t::operator<<(double val) {}*/
 
 BinIO_t& BinIO_t::operator>>(void* buf)
 {
-
+    m_rightShift = buf;
+    return *this;
 }
 
 BinIO_t& BinIO_t::operator<<(const void* buf)
 {
-
+    m_leftShift = (void*)buf;
+    return *this;
 }
 
 void BinIO_t::operator,(int len)
 {
-
+    if(m_rightShift)
+    {
+        if(validRead())
+        {
+            fread(m_rightShift, len, 1, m_fp);
+            m_rightShift = 0;
+        }
+        else
+        {
+            m_status = readErr_e;
+            throw string("Read error");
+        }
+    }
+    else if(m_leftShift)
+    {
+        if(validWrite())
+        {
+            fwrite((const void*)m_leftShift, len, 1, m_fp);
+            m_leftShift = 0;
+        }
+        else
+        {
+            m_status = writeErr_e;
+            throw string("Write error");
+        }
+    }
 }

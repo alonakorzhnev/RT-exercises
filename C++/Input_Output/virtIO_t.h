@@ -4,14 +4,14 @@
 
 using namespace std;
 
-typedef enum {ok_e, cant_open_file_e, bad_access_e, writeErr_e, readErr_e} Status;
-
 class VirtIO_t
 {
     public:
+        typedef enum {ok_e, cant_open_file_e, bad_access_e, writeErr_e, readErr_e} Status;
+
         VirtIO_t();
         VirtIO_t(const string& name, const string& access);
-        virtual ~VirtIO_t() {}
+        virtual ~VirtIO_t() { close(); }
 
         void open();
         void close();
@@ -26,8 +26,8 @@ class VirtIO_t
 
         Status getStatus() const { return m_status; }
 
-        virtual VirtIO_t& operator>>(char& val) = 0;
-        virtual VirtIO_t& operator<<(char val) = 0;
+        virtual VirtIO_t& operator>>(int& val) = 0;
+        virtual VirtIO_t& operator<<(int val) = 0;
 
         /*virtual VirtIO_t& operator>>(unsigned char& val) = 0;
         virtual VirtIO_t& operator<<(unsigned char val) = 0;
@@ -59,11 +59,9 @@ class VirtIO_t
     protected:
         string m_name;
         string m_access;
-        size_t m_position;
         Status m_status;
         FILE* m_fp;
 
-        void setStatus(Status status) { m_status = status; }
         bool validRead();
         bool validWrite();
 

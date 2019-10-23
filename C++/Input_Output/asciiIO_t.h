@@ -11,68 +11,61 @@ class AsciiIO_t : public VirtIO_t
         AsciiIO_t(const string& name, const string& access) : VirtIO_t(name, access) {}
         ~AsciiIO_t() {}
 
-        VirtIO_t& operator>>(char& val);
-        VirtIO_t& operator<<(char val);
+        AsciiIO_t& operator>>(int& val);
+        AsciiIO_t& operator<<(int val);
 
-        template <class T> void fileToVal(T& val, const string& format);
-        template <class T> void valToFile(T val, const string& format);
+        /*AsciiIO_t& operator>>(unsigned char& val);
+        AsciiIO_t& operator<<(unsigned char val);
 
-        /*VirtIO_t& operator>>(unsigned char& val);
-        VirtIO_t& operator<<(unsigned char val);
-
-        VirtIO_t& operator>>(short& val);
-        VirtIO_t& operator<<(short val);
+        AsciiIO_t& operator>>(short& val);
+        AsciiIO_t& operator<<(short val);
         
-        VirtIO_t& operator>>(unsigned short& val);
-        VirtIO_t& operator<<(unsigned short val);
+        AsciiIO_t& operator>>(unsigned short& val);
+        AsciiIO_t& operator<<(unsigned short val);
 
-        VirtIO_t& operator>>(int& val);
-        VirtIO_t& operator<<(int val);
+        AsciiIO_t& operator>>(int& val);
+        AsciiIO_t& operator<<(int val);
 
-        VirtIO_t& operator>>(unsigned int& val);
-        VirtIO_t& operator<<(unsigned int val);
+        AsciiIO_t& operator>>(unsigned int& val);
+        AsciiIO_t& operator<<(unsigned int val);
 
-        VirtIO_t& operator>>(long& val);
-        VirtIO_t& operator<<(long val);
+        AsciiIO_t& operator>>(long& val);
+        AsciiIO_t& operator<<(long val);
 
-        VirtIO_t& operator>>(unsigned long& val);
-        VirtIO_t& operator<<(unsigned long val);
+        AsciiIO_t& operator>>(unsigned long& val);
+        AsciiIO_t& operator<<(unsigned long val);
 
-        VirtIO_t& operator>>(float& val);
-        VirtIO_t& operator<<(float val);
+        AsciiIO_t& operator>>(float& val);
+        AsciiIO_t& operator<<(float val);
 
-        VirtIO_t& operator>>(double& val);
-        VirtIO_t& operator<<(double val);*/
+        AsciiIO_t& operator>>(double& val);
+        AsciiIO_t& operator<<(double val);*/
+
+    private:
+        template <class T> AsciiIO_t& fileToVal(T& val, const char* format);
+        template <class T> AsciiIO_t& valToFile(T val, const char* format);
 };
 
 template <class T> 
-void AsciiIO_t::fileToVal(T& val, const string& format)
+AsciiIO_t& AsciiIO_t::fileToVal(T& val, const char* format)
 {
-   if(validRead())
-   {
-       if(fscanf(m_fp, format.c_str(), val) != 1)
-       {
-           m_status = readErr_e;
-       }
-   }
-   else
-   {
-       throw string("Read forbidden");
-   }   
+    if(validRead())
+    {
+        fscanf(m_fp, format, &val);
+        return *this;              
+    }
+    m_status = readErr_e;
+    throw string("Read error");   
 }
 
 template <class T> 
-void AsciiIO_t::valToFile(T val, const string& format)
+AsciiIO_t& AsciiIO_t::valToFile(T val, const char* format)
 {
     if(validWrite())
     {
-        if(fprintf(m_fp, format.c_str(), val) < 0)
-        {
-            m_status = writeErr_e;
-        }
+        fprintf(m_fp, format, val);
+        return *this;
     }
-    else
-    {
-        throw string("Write forbidden");
-    } 
+    m_status = writeErr_e;
+    throw string("Write error");
 }

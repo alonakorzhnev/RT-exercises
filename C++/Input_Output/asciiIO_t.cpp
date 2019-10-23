@@ -1,38 +1,38 @@
 #include "asciiIO_t.h"
 
-VirtIO_t& AsciiIO_t::operator>>(char& val)
+AsciiIO_t& AsciiIO_t::operator>>(int& val)
 {
-    fileToVal<char>(val, "%c");
+    return fileToVal<int>(val, "%d");
 }
 
-VirtIO_t& AsciiIO_t::operator<<(char val)
+AsciiIO_t& AsciiIO_t::operator<<(int val)
 {
-    valToFile<char>(val, "%c");
+    return valToFile<int>(val, "%d");
 }
 
-/*VirtIO_t& VirtIO_t::operator>>(unsigned char& val) {}
-VirtIO_t& VirtIO_t::operator<<(unsigned char val) {}
+/*AsciiIO_t& AsciiIO_t::operator>>(unsigned char& val) {}
+AsciiIO_t& AsciiIO_t::operator<<(unsigned char val) {}
 
-VirtIO_t& VirtIO_t::operator>>(short& val) {}
-VirtIO_t& VirtIO_t::operator<<(short val) {}
+AsciiIO_t& AsciiIO_t::operator>>(short& val) {}
+AsciiIO_t& AsciiIO_t::operator<<(short val) {}
         
-VirtIO_t& VirtIO_t::operator>>(unsigned short& val) {}
-VirtIO_t& VirtIO_t::operator<<(unsigned short val) {}
+AsciiIO_t& AsciiIO_t::operator>>(unsigned short& val) {}
+AsciiIO_t& AsciiIO_t::operator<<(unsigned short val) {}
 
-VirtIO_t& VirtIO_t::operator>>(int& val) {}
-VirtIO_t& VirtIO_t::operator<<(int val) {}
+AsciiIO_t& AsciiIO_t::operator>>(int& val) {}
+AsciiIO_t& AsciiIO_t::operator<<(int val) {}
 
-VirtIO_t& VirtIO_t::operator>>(unsigned int& val) {}
-VirtIO_t& VirtIO_t::operator<<(unsigned int val) {}
+AsciiIO_t& AsciiIO_t::operator>>(unsigned int& val) {}
+AsciiIO_t& AsciiIO_t::operator<<(unsigned int val) {}
 
-VirtIO_t& VirtIO_t::operator>>(long& val) {}
-VirtIO_t& VirtIO_t::operator<<(long val) {}
+AsciiIO_t& AsciiIO_t::operator>>(long& val) {}
+AsciiIO_t& AsciiIO_t::operator<<(long val) {}
 
-VirtIO_t& VirtIO_t::operator>>(unsigned long& val) {}
-VirtIO_t& VirtIO_t::operator<<(unsigned long val) {}
+AsciiIO_t& AsciiIO_t::operator>>(unsigned long& val) {}
+AsciiIO_t& AsciiIO_t::operator<<(unsigned long val) {}
 
-VirtIO_t& VirtIO_t::operator>>(float& val) {}
-VirtIO_t& VirtIO_t::operator<<(float val) {}
+AsciiIO_t& AsciiIO_t::operator>>(float& val) {}
+AsciiIO_t& AsciiIO_t::operator<<(float val) {}
 
-VirtIO_t& VirtIO_t::operator>>(double& val) {}
-VirtIO_t& VirtIO_t::operator<<(double val) {}*/
+AsciiIO_t& AsciiIO_t::operator>>(double& val) {}
+AsciiIO_t& AsciiIO_t::operator<<(double val) {}*/
