@@ -21,7 +21,7 @@ class VirtIO_t
 
         size_t getFileLenght() const;
 
-        size_t getPosition() const { return m_position; }
+        size_t getPosition() const;
         void setPosition(size_t position);
 
         Status getStatus() const { return m_status; }

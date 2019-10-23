@@ -33,6 +33,15 @@ void VirtIO_t::close()
     fclose(m_fp);
 }
 
+ size_t VirtIO_t::getPosition() const
+ {
+    size_t position = 0;
+    if(m_fp)
+    {        
+        position = ftell(m_fp);
+    }
+ }
+
 size_t VirtIO_t::getFileLenght() const
 {
     size_t lenght = 0, currPosition = ftell(m_fp);
