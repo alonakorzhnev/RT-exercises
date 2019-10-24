@@ -201,12 +201,14 @@ void writeVoidPtr(VirtIO_t* filePtr)
 
         try
         {
+            filePtr->open();
             (*fileBin).operator<<((void*)&val).operator,(sizeof(double));
         }
         catch(string e)
         {
             cout << e << endl;
         }
+        filePtr->close();
     }    
 }
 
@@ -218,12 +220,14 @@ void readVoidPtr(VirtIO_t* filePtr)
 
         try
         {
+            filePtr->open();
             (*fileBin).operator>>((void*)&val).operator,(sizeof(double));
             cout << "Result: " << val;;
         }
         catch(string e)
         {
             cout << e << endl;
-        } 
+        }
+        filePtr->close();
     } 
 }
