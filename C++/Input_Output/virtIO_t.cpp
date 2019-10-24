@@ -12,6 +12,7 @@ VirtIO_t::VirtIO_t(const string& name, const string& access)
     m_access = access;
     m_status = ok_e;
     m_fp = 0;
+    open();
 }
 
 void VirtIO_t::open()

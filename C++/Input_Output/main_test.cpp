@@ -7,7 +7,7 @@
 using namespace std;
 
 template <class T> void writeTempl(VirtIO_t* filePtr, T val);
-template <class T> void readTempl(VirtIO_t* filePtr, T val);
+template <class T> void readTempl(VirtIO_t* filePtr, T& val);
 
 void writeVoidPtr(VirtIO_t* filePtr);
 void readVoidPtr(VirtIO_t* filePtr);
@@ -98,28 +98,25 @@ template <class T> void writeTempl(VirtIO_t* filePtr, T val)
 {
     try
     {
-        filePtr->open();
         filePtr->operator<<(val);
     }
     catch(string e)
     {
         cout << e << endl;
     }
-    filePtr->close();
 }
 
-template <class T> void readTempl(VirtIO_t* filePtr, T val)
+template <class T> void readTempl(VirtIO_t* filePtr, T& val)
 {
     try
     {
-        filePtr->open();
         filePtr->operator>>(val);
+        cout << "Result: " << val << endl;
     }
     catch(string e)
     {
         cout << e << endl;
     }
-    filePtr->close();
 }
 
 void writeToFile(VirtIO_t* filePtr)
@@ -167,16 +164,12 @@ void readFromFile(VirtIO_t* filePtr)
         case 'i':
         {
             int val;
-            cout << "Enter int value: ";
-            cin >> val;
             readTempl<int>(filePtr, val);
             break;
         }
         case 'f':
         {
             float val;
-            cout << "Enter float value: ";
-            cin >> val;
             readTempl<float>(filePtr, val);
             break;
         }
@@ -201,14 +194,12 @@ void writeVoidPtr(VirtIO_t* filePtr)
 
         try
         {
-            filePtr->open();
             fileBin->operator<<((void*)&val).operator,(sizeof(int));
         }
         catch(string e)
         {
             cout << e << endl;
         }
-        filePtr->close();
     }    
 }
 
@@ -220,7 +211,6 @@ void readVoidPtr(VirtIO_t* filePtr)
 
         try
         {
-            filePtr->open();
             fileBin->operator>>((void*)&val).operator,(sizeof(int));
             cout << "Result int: " << val << endl;
         }
@@ -228,6 +218,5 @@ void readVoidPtr(VirtIO_t* filePtr)
         {
             cout << e << endl;
         }
-        filePtr->close();
     } 
 }
