@@ -29,6 +29,9 @@ class VirtIO_t
         virtual VirtIO_t& operator>>(int& val) = 0;
         virtual VirtIO_t& operator<<(int val) = 0;
 
+        virtual VirtIO_t& operator>>(float& val) = 0;
+        virtual VirtIO_t& operator<<(float val) = 0;
+
         /*virtual VirtIO_t& operator>>(unsigned char& val) = 0;
         virtual VirtIO_t& operator<<(unsigned char val) = 0;
 
@@ -38,9 +41,6 @@ class VirtIO_t
         virtual VirtIO_t& operator>>(unsigned short& val) = 0;
         virtual VirtIO_t& operator<<(unsigned short val) = 0;
 
-        virtual VirtIO_t& operator>>(int& val) = 0;
-        virtual VirtIO_t& operator<<(int val) = 0;
-
         virtual VirtIO_t& operator>>(unsigned int& val) = 0;
         virtual VirtIO_t& operator<<(unsigned int val) = 0;
 
@@ -49,9 +49,6 @@ class VirtIO_t
 
         virtual VirtIO_t& operator>>(unsigned long& val) = 0;
         virtual VirtIO_t& operator<<(unsigned long val) = 0;
-
-        virtual VirtIO_t& operator>>(float& val) = 0;
-        virtual VirtIO_t& operator<<(float val) = 0;
 
         virtual VirtIO_t& operator>>(double& val) = 0;
         virtual VirtIO_t& operator<<(double val) = 0;*/

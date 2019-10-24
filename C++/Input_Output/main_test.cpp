@@ -10,6 +10,7 @@ template <class T> void writeTempl(VirtIO_t* filePtr, T val);
 template <class T> void readTempl(VirtIO_t* filePtr, T val);
 
 void writeVoidPtr(VirtIO_t* filePtr);
+void readVoidPtr(VirtIO_t* filePtr);
 
 void test(char type);
 void writeToFile(VirtIO_t* filePtr);
@@ -147,10 +148,7 @@ void writeToFile(VirtIO_t* filePtr)
         }
         case 'v':
         {
-            if(BinIO_t* fileBin = dynamic_cast<BinIO_t*>(filePtr))
-            {
-                writeVoidPtr(filePtr);
-            }
+            writeVoidPtr(filePtr);
             break;
         }        
         default:
@@ -160,23 +158,72 @@ void writeToFile(VirtIO_t* filePtr)
 
 void readFromFile(VirtIO_t* filePtr)
 {
-    
+    char type;
+    cout << "Enter type of value int(i)/float(f)/void*(v): ";
+    cin >> type;
+
+    switch(type)
+    {
+        case 'i':
+        {
+            int val;
+            cout << "Enter int value: ";
+            cin >> val;
+            readTempl<int>(filePtr, val);
+            break;
+        }
+        case 'f':
+        {
+            float val;
+            cout << "Enter float value: ";
+            cin >> val;
+            readTempl<float>(filePtr, val);
+            break;
+        }
+        case 'v':
+        {
+            readVoidPtr(filePtr);
+            break;
+        }        
+        default:
+            break;
+    }
 }
 
 void writeVoidPtr(VirtIO_t* filePtr)
 {
-    double val;
-
-    cout << "Enter value double: ";
-    cin >> val;
-
-    try
+    if(BinIO_t* fileBin = dynamic_cast<BinIO_t*>(filePtr))
     {
-        /* code */
-    }
-    catch(string e)
+        double val;
+
+        cout << "Enter value double: ";
+        cin >> val;
+
+        try
+        {
+            (*fileBin).operator<<((void*)&val).operator,(sizeof(double));
+        }
+        catch(string e)
+        {
+            cout << e << endl;
+        }
+    }    
+}
+
+void readVoidPtr(VirtIO_t* filePtr)
+{
+    if(BinIO_t* fileBin = dynamic_cast<BinIO_t*>(filePtr))
     {
-        std::cerr << e.what() << '\n';
-    }
-    
+        double val;
+
+        try
+        {
+            (*fileBin).operator>>((void*)&val).operator,(sizeof(double));
+            cout << "Result: " << val;;
+        }
+        catch(string e)
+        {
+            cout << e << endl;
+        } 
+    } 
 }

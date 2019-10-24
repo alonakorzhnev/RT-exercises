@@ -10,6 +10,16 @@ BinIO_t& BinIO_t::operator<<(int val)
     return valToFile<int>(val);
 }
 
+BinIO_t& BinIO_t::operator>>(float& val)
+{
+    return fileToVal<float>(val);
+}
+
+BinIO_t& BinIO_t::operator<<(float val)
+{
+    return valToFile<float>(val);
+}
+
 /*BinIO_t& BinIO_t::operator>>(short& val) {}
 BinIO_t& BinIO_t::operator<<(short val) {}
         

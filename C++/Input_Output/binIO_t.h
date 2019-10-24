@@ -14,6 +14,9 @@ class BinIO_t : public VirtIO_t
         BinIO_t& operator>>(int& val);
         BinIO_t& operator<<(int val);
 
+        BinIO_t& operator>>(float& val);
+        BinIO_t& operator<<(float val);
+
         /*BinIO_t& operator>>(unsigned char& val);
         BinIO_t& operator<<(unsigned char val);
 
@@ -23,9 +26,6 @@ class BinIO_t : public VirtIO_t
         BinIO_t& operator>>(unsigned short& val);
         BinIO_t& operator<<(unsigned short val);
 
-        BinIO_t& operator>>(int& val);
-        BinIO_t& operator<<(int val);
-
         BinIO_t& operator>>(unsigned int& val);
         BinIO_t& operator<<(unsigned int val);
 
@@ -34,9 +34,6 @@ class BinIO_t : public VirtIO_t
 
         BinIO_t& operator>>(unsigned long& val);
         BinIO_t& operator<<(unsigned long val);
-
-        BinIO_t& operator>>(float& val);
-        BinIO_t& operator<<(float val);
 
         BinIO_t& operator>>(double& val);
         BinIO_t& operator<<(double val);*/

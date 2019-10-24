@@ -14,6 +14,9 @@ class AsciiIO_t : public VirtIO_t
         AsciiIO_t& operator>>(int& val);
         AsciiIO_t& operator<<(int val);
 
+        AsciiIO_t& operator>>(float& val);
+        AsciiIO_t& operator<<(float val);
+
         /*AsciiIO_t& operator>>(unsigned char& val);
         AsciiIO_t& operator<<(unsigned char val);
 
@@ -23,9 +26,6 @@ class AsciiIO_t : public VirtIO_t
         AsciiIO_t& operator>>(unsigned short& val);
         AsciiIO_t& operator<<(unsigned short val);
 
-        AsciiIO_t& operator>>(int& val);
-        AsciiIO_t& operator<<(int val);
-
         AsciiIO_t& operator>>(unsigned int& val);
         AsciiIO_t& operator<<(unsigned int val);
 
@@ -34,9 +34,6 @@ class AsciiIO_t : public VirtIO_t
 
         AsciiIO_t& operator>>(unsigned long& val);
         AsciiIO_t& operator<<(unsigned long val);
-
-        AsciiIO_t& operator>>(float& val);
-        AsciiIO_t& operator<<(float val);
 
         AsciiIO_t& operator>>(double& val);
         AsciiIO_t& operator<<(double val);*/
