@@ -1,6 +1,7 @@
 #include "tokenyzer.h"
 #include <sstream>
 #include <cctype>
+#include <iostream>
 
 void Tokenyzer::tokenyze(const string& line, vector<string>& tokens)
 {
@@ -17,9 +18,16 @@ void Tokenyzer::tokenyze(const string& line, vector<string>& tokens)
 
         if(!isspace(delim))
         {
-            tokens.push_back(delim);
+            string str = "";
+            str += delim;
+            tokens.push_back(str);
         }
 
         found = line.find_first_of(delimeters, found + 1);
+    }
+
+    for(int i = 0; i < tokens.size(); i++)
+    {
+        cout << tokens[i] << " ";
     }
 }

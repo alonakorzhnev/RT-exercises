@@ -7,8 +7,8 @@ using namespace std;
 class Analyzer
 {
     public:
-        ~Analyzer();
-        Analyzer();
+        ~Analyzer() {}
+        Analyzer() {}
 
         void analyze(vector<string>& tokens, size_t lineNum);
         void analyzeToken(const string& token);

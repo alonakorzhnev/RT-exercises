@@ -12,8 +12,7 @@ class Parser
         ~Parser() {}
         Parser() {}
 
-        void parseFile(const string& fileName);
-        void printTokens();
+        void parseFile(const char* fileName);
 
     private:
         Tokenyzer       m_tokenizer;
