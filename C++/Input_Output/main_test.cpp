@@ -202,7 +202,7 @@ void writeVoidPtr(VirtIO_t* filePtr)
         try
         {
             filePtr->open();
-            (*fileBin).operator<<((void*)&val).operator,(sizeof(int));
+            fileBin->operator<<((void*)&val).operator,(sizeof(int));
         }
         catch(string e)
         {
@@ -221,7 +221,7 @@ void readVoidPtr(VirtIO_t* filePtr)
         try
         {
             filePtr->open();
-            (*fileBin).operator>>((void*)&val).operator,(sizeof(int));
+            fileBin->operator>>((void*)&val).operator,(sizeof(int));
             cout << "Result int: " << val << endl;
         }
         catch(string e)

@@ -75,7 +75,7 @@ void BinIO_t::operator,(int len)
     {
         if(validWrite())
         {
-            fwrite((const void*)m_leftShift, len, 1, m_fp);
+            fwrite(m_leftShift, len, 1, m_fp);
             m_leftShift = 0;
         }
         else
