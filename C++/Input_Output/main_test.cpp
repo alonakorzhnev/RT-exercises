@@ -194,15 +194,15 @@ void writeVoidPtr(VirtIO_t* filePtr)
 {
     if(BinIO_t* fileBin = dynamic_cast<BinIO_t*>(filePtr))
     {
-        double val;
+        int val;
 
-        cout << "Enter value double: ";
+        cout << "Enter value int: ";
         cin >> val;
 
         try
         {
             filePtr->open();
-            (*fileBin).operator<<((void*)&val).operator,(sizeof(double));
+            (*fileBin).operator<<((void*)&val).operator,(sizeof(int));
         }
         catch(string e)
         {
@@ -216,13 +216,13 @@ void readVoidPtr(VirtIO_t* filePtr)
 {
     if(BinIO_t* fileBin = dynamic_cast<BinIO_t*>(filePtr))
     {
-        double val;
+        int val;
 
         try
         {
             filePtr->open();
-            (*fileBin).operator>>((void*)&val).operator,(sizeof(double));
-            cout << "Result: " << val;;
+            (*fileBin).operator>>((void*)&val).operator,(sizeof(int));
+            cout << "Result int: " << val << endl;
         }
         catch(string e)
         {
