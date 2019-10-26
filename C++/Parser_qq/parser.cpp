@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 
-void Parser::parseFile(const char* fileName)
+void Parser::parse(const char* fileName)
 {
     ifstream file(fileName);
     string line;
@@ -12,9 +12,12 @@ void Parser::parseFile(const char* fileName)
     {
         while(getline(file, line))
         {
-            m_tokenizer.tokenyze(line, m_tokens);
+            m_tokenizer.tokenize(line, m_tokens);
             m_analyzer.analyze(m_tokens, lineNum);
+            ++lineNum;
         }
+
+        m_analyzer.analyzeEnd();
         file.close();
     }
     else throw string("Unable to open file");

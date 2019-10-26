@@ -13,7 +13,7 @@ INCLUDES =
 LIBS =
 
 # define the C source files
-SRCS = main_test.cpp parser.cpp tokenyzer.cpp analyzer.cpp
+SRCS = main_test.cpp parser.cpp tokenizer.cpp analyzer.cpp
 
 # define the C object files 
 #

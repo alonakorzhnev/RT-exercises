@@ -1,6 +1,6 @@
 #pragma once
 #include "analyzer.h"
-#include "tokenyzer.h"
+#include "tokenizer.h"
 #include <vector>
 #include <string>
 
@@ -12,10 +12,10 @@ class Parser
         ~Parser() {}
         Parser() {}
 
-        void parseFile(const char* fileName);
+        void parse(const char* fileName);
 
     private:
-        Tokenyzer       m_tokenizer;
+        Tokenizer       m_tokenizer;
         Analyzer        m_analyzer;
         vector<string>  m_tokens;
 

@@ -1,11 +1,11 @@
-#include "tokenyzer.h"
+#include "tokenizer.h"
 #include <sstream>
 #include <cctype>
 #include <iostream>
 
-void Tokenyzer::tokenyze(const string& line, vector<string>& tokens)
+void Tokenizer::tokenize(const string& line, vector<string>& tokens)
 {
-    string delimeters("()[]{};<>=+-*& \\n\\t\\v\\f\\r");
+    string delimeters("()[]{};<>=+-*& \n\t\v\f\r");
     size_t found = line.find_first_of(delimeters);
     istringstream ss(line);
     string token;
@@ -14,6 +14,7 @@ void Tokenyzer::tokenyze(const string& line, vector<string>& tokens)
     {
         char delim = line[found];
         getline(ss, token, delim);
+
         tokens.push_back(token);
 
         if(!isspace(delim))
@@ -24,10 +25,5 @@ void Tokenyzer::tokenyze(const string& line, vector<string>& tokens)
         }
 
         found = line.find_first_of(delimeters, found + 1);
-    }
-
-    for(int i = 0; i < tokens.size(); i++)
-    {
-        cout << tokens[i] << " ";
     }
 }
