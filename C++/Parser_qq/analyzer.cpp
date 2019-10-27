@@ -37,9 +37,11 @@ void Analyzer::analyze(const vector<string>& tokens, size_t lineNum)
 
 void Analyzer::analyzeToken(const string& token, size_t lineNum)
 {
-    checkMain(token, lineNum);
-    
-    if(m_predTypes.find(token) != m_predTypes.end())
+    if(m_firstToken)
+    {
+        checkMain(token, lineNum);
+    }    
+    else if(m_predTypes.find(token) != m_predTypes.end())
     {
         checkType(token, lineNum);
     }
@@ -179,16 +181,10 @@ void Analyzer::checkIfElse(const string& token, size_t lineNum)
 
 void Analyzer::checkMain(const string& token, size_t lineNum)
 {
-    if(m_firstToken == true && token != "main")
+    if(token != "main")
     {
-        clearPlusMinus();
         m_firstToken = false;
-        cout << "line " << lineNum << "-error, no 'main before'" << endl;
-    }
-    else if(m_firstToken == false && token == "main")
-    {
-        clearPlusMinus();
-        cout << "line " << lineNum << "-error, illegal declaration before 'main'" << endl;
+        cout << "line " << lineNum << "-error, no 'main' before" << endl;
     }
 }
 
