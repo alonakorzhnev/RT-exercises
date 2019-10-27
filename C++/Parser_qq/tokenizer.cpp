@@ -3,27 +3,37 @@
 #include <cctype>
 #include <iostream>
 
+using namespace std;
+
+string Tokenizer::m_delimeters = "()[]{};<>=+-*& \n\t\v\f\r";
+
 void Tokenizer::tokenize(const string& line, vector<string>& tokens)
 {
-    string delimeters("()[]{};<>=+-*& \n\t\v\f\r");
-    size_t found = line.find_first_of(delimeters);
-    istringstream ss(line);
-    string token;
+    size_t start = 0;
+    size_t found = line.find_first_of(m_delimeters);
+    tokens.clear();
     
     while(found != string::npos)
     {
-        char delim = line[found];
-        getline(ss, token, delim);
+        string token = line.substr(start, found - start);
+        start = found + 1;
 
         tokens.push_back(token);
 
-        if(!isspace(delim))
+        char delim = line[found];
+        if(!isspace(line[found]))
         {
             string str = "";
             str += delim;
             tokens.push_back(str);
         }
 
-        found = line.find_first_of(delimeters, found + 1);
+        found = line.find_first_of(m_delimeters, start);
     }
+
+    /*for(int i = 0; i < tokens.size(); ++i)
+    {
+        cout << tokens[i] << " ";
+    }
+    cout << endl;*/
 }

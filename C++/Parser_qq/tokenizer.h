@@ -2,17 +2,20 @@
 #include <vector>
 #include <string>
 
-using namespace std;
-
 class Tokenizer
 {
     public:
         ~Tokenizer() {}
         Tokenizer() {}
 
-        void tokenize(const string& line, vector<string>& tokens);
+        void tokenize(const std::string& line, std::vector<std::string>& tokens);
+
+        static std::string& getDelimeters() { return m_delimeters; }
+        static void setDelimeters(const std::string& del) { m_delimeters = del; } 
 
     private:
         Tokenizer(const Tokenizer& t);
         Tokenizer& operator=(const Tokenizer& t);
+
+        static std::string m_delimeters;
 };

@@ -1,6 +1,21 @@
 #include "parser.h"
-#include <iostream>
+#include "analyzer.h"
+#include "tokenizer.h"
 #include <fstream>
+
+using namespace std;
+
+Parser::~Parser()
+{
+    delete m_tokenizer;
+    delete m_analyzer;
+}
+
+Parser::Parser()
+{
+    m_tokenizer = new Tokenizer;
+    m_analyzer = new Analyzer;
+}
 
 void Parser::parse(const char* fileName)
 {
@@ -12,12 +27,12 @@ void Parser::parse(const char* fileName)
     {
         while(getline(file, line))
         {
-            m_tokenizer.tokenize(line, m_tokens);
-            m_analyzer.analyze(m_tokens, lineNum);
             ++lineNum;
+            m_tokenizer->tokenize(line + "\n", m_tokens);
+            m_analyzer->analyze(m_tokens, lineNum);
         }
 
-        m_analyzer.analyzeEnd();
+        m_analyzer->analyzeEnd();
         file.close();
     }
     else throw string("Unable to open file");
