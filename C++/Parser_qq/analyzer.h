@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <queue>
 #include <set>
 #include <string>
 
@@ -9,7 +9,7 @@ class Analyzer
         virtual ~Analyzer() {}
         Analyzer();
 
-        void analyze(const std::vector<std::string>& tokens, size_t lineNum);
+        void analyze(std::queue<std::string>& tokens, size_t lineNum);
         virtual void analyzeEnd();
 
     private:

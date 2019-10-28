@@ -1,5 +1,5 @@
 #pragma once
-#include <vector>
+#include <queue>
 #include <string>
 
 class Tokenizer;
@@ -16,7 +16,7 @@ class Parser
     private:
         Tokenizer*       m_tokenizer;
         Analyzer*        m_analyzer;
-        std::vector<std::string>   m_tokens;
+        std::queue<std::string>   m_tokens;
 
         Parser(const Parser& p);
         Parser& operator=(const Parser& p);

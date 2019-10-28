@@ -24,12 +24,14 @@ Analyzer::Analyzer() : m_predTypes(predTypes, predTypes + sizeof(predTypes)/size
     m_curly = 0;
 }
 
-void Analyzer::analyze(const vector<string>& tokens, size_t lineNum)
+void Analyzer::analyze(queue<string>& tokens, size_t lineNum)
 {
-    for(int i = 0; i < tokens.size(); ++i)
+    while(!tokens.empty())
     {
-        if(tokens[i] != "")
-            analyzeToken(tokens[i], lineNum);
+        string token = tokens.front();
+        tokens.pop();
+        if(token != "")
+            analyzeToken(token, lineNum);
     }
 }
 
