@@ -29,145 +29,110 @@ void Analyzer::analyze(const vector<string>& tokens, size_t lineNum)
     for(int i = 0; i < tokens.size(); ++i)
     {
         if(tokens[i] != "")
-        {
             analyzeToken(tokens[i], lineNum);
-        }
     }
 }
 
 void Analyzer::analyzeToken(const string& token, size_t lineNum)
 {
     if(m_firstToken)
-    {
-        checkMain(token, lineNum);
-    }    
-    else if(m_predTypes.find(token) != m_predTypes.end())
-    {
+        checkMain(token, lineNum);  
+    if(m_predTypes.find(token) != m_predTypes.end())
         checkType(token, lineNum);
-    }
     else if(m_keyWords.find(token) != m_keyWords.end())
-    {
-        if(m_type)
-        {
-            cout << "line " << lineNum << "-error, " << token << " illegal variable name" << endl;
-            m_type = false;
-            return;
-        }
         checkKeyWords(token, lineNum);
-    }
     else if(m_operators.find(token) != m_operators.end())
-    {
-        if(m_type)
-        {
-            cout << "line " << lineNum << "-error, " << token << " illegal variable name" << endl;
-            m_type = false;
-            return;
-        }
         checkOperators(token, lineNum);
-    }
     else if(m_delimeters.find(token) != m_delimeters.end())
-    {
-        if(m_type)
-        {
-            cout << "line " << lineNum << "-error, " << token << " illegal variable name" << endl;
-            m_type = false;
-            return;
-        }
         checkBrackets(token, lineNum);
-    }
     else
-    {
         checkVar(token, lineNum);
+}
+
+bool Analyzer::isTypeDeclared(const string& token, size_t lineNum)
+{
+    if(m_type)
+    {
+        cout << "line " << lineNum << "-error, " << token << " illegal variable name" << endl;
+        m_type = false;
+        return true;
     }
+    else return false;
 }
 
 void Analyzer::checkType(const string& token, size_t lineNum)
 {
     clearPlusMinus();
-
     if(m_type)
     {
         m_type = false;
         cout << "line " << lineNum << "-error, error multiple type declaration" << endl;            
         return;
     }
-
     m_type = true;
 }
 
 void Analyzer::checkKeyWords(const string& token, size_t lineNum)
 {
-    if(token == "if" || token == "else")
-    {
+    if(!isTypeDeclared(token, lineNum) && (token == "if" || token == "else"))
         checkIfElse(token, lineNum);
-    }
 }
 
 void Analyzer::checkOperators(const string& token, size_t lineNum)
 {
-    if(token == "+")
+    if(!isTypeDeclared(token, lineNum))
     {
-        checkPlus(token, lineNum);
-    }
-    else if(token == "-")
-    {
-        checkMinus(token, lineNum);
+        if(token == "+")
+            checkPlus(token, lineNum);
+        else if(token == "-")
+            checkMinus(token, lineNum);
     }
 }
 
 void Analyzer::checkBrackets(const string& token, size_t lineNum)
 {
-    if(token == "(" || token == ")")
+    clearPlusMinus();
+    if(!isTypeDeclared(token, lineNum))
     {
-        checkRound(token, lineNum);
-    }
-    else if(token == "[" || token == "]")
-    {
-        checkSquare(token, lineNum);
-    }
-    else if(token == "{" || token == "}")
-    {
-        checkCurly(token, lineNum);
+        if(token == "(" || token == ")")
+            checkRound(token, lineNum);
+        else if(token == "[" || token == "]")
+            checkSquare(token, lineNum);
+        else if(token == "{" || token == "}")
+            checkCurly(token, lineNum);
     }
 }
 
 void Analyzer::checkVar(const string& token, size_t lineNum)
 {
     clearPlusMinus();
-
     if(m_type)
     {
         if(m_varTable.find(token) == m_varTable.end())
         {
-            if(isalpha(token[0]))
-            {
+            if(isNameValid(token))
                 m_varTable.insert(token);
-            }  
             else
-            {
-                cout << "line " << lineNum << "-error, " << token << " illegal variable name" << endl;
-            }                                           
+                cout << "line " << lineNum << "-error, " << token << " illegal variable name" << endl;                                          
         }
         else
-        {
-            cout << "line " << lineNum << "-error, variable " << token << " already declared" << endl;
-        }  
+            cout << "line " << lineNum << "-error, variable " << token << " already declared" << endl; 
         m_type = false;          
     }
     else
-    {
-        cout << "line " << lineNum << "-error, variable " << token << " is not declared" << endl;
-    }    
+        cout << "line " << lineNum << "-error, variable " << token << " is not declared" << endl;   
+}
+
+bool Analyzer::isNameValid(const string& token) const
+{
+    return (isalpha(token[0]) || token[0] == '_') ? true : false;
 }
 
 void Analyzer::checkIfElse(const string& token, size_t lineNum)
 {
     clearPlusMinus();
-
     if(token == "if")
-    {
         ++m_ifElse;
-    }
     else if(token == "else")
     {
         --m_ifElse;
@@ -191,15 +156,10 @@ void Analyzer::checkMain(const string& token, size_t lineNum)
 void Analyzer::checkRound(const string& token, size_t lineNum)
 {
     if(token == "(")
-    {
         ++m_round;
-        clearPlusMinus();
-    }
     else if(token == ")")
     {
-        --m_round;
-        clearPlusMinus();
-
+        --m_round;        
         if(m_round < 0)
         {
             m_round = 0;
@@ -209,17 +169,12 @@ void Analyzer::checkRound(const string& token, size_t lineNum)
 }
 
 void Analyzer::checkSquare(const string& token, size_t lineNum)
-{
+{    
     if(token == "[")
-    {
         ++m_square;
-        clearPlusMinus();
-    }
     else if(token == "]")
     {
         --m_square;
-        clearPlusMinus();
-
         if(m_square < 0)
         {
             m_square = 0;
@@ -231,15 +186,10 @@ void Analyzer::checkSquare(const string& token, size_t lineNum)
 void Analyzer::checkCurly(const string& token, size_t lineNum)
 {
     if(token == "{")
-    {
         ++m_curly;
-        clearPlusMinus();
-    }
     else if(token == "}")
     {
         --m_curly;
-        clearPlusMinus();
-
         if(m_curly < 0)
         {
             m_curly = 0;
@@ -285,17 +235,11 @@ void Analyzer::clearCounters()
 void Analyzer::analyzeEnd()
 {
     if(m_round != 0)
-    {
         cout << "error " << m_round << "'(' not closed" << endl; 
-    }
     if(m_square != 0)
-    {
         cout << "error " << m_square << "'[' not closed" << endl; 
-    }
     if(m_curly != 0)
-    {
         cout << "error " << m_curly << "'{' not closed" << endl; 
-    }
 
     clearCounters();
     m_varTable.clear();

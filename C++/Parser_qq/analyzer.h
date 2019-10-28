@@ -10,7 +10,7 @@ class Analyzer
         Analyzer();
 
         void analyze(const std::vector<std::string>& tokens, size_t lineNum);
-        void analyzeEnd();
+        virtual void analyzeEnd();
 
     private:
         void analyzeToken(const std::string& token, size_t lineNum);
@@ -28,6 +28,8 @@ class Analyzer
         void checkCurly(const std::string& token, size_t lineNum);
         void checkPlus(const std::string& token, size_t lineNum);
         void checkMinus(const std::string& token, size_t lineNum);
+        bool isTypeDeclared(const std::string& token, size_t lineNum);
+        bool isNameValid(const std::string& token) const;
 
         void clearPlusMinus() { m_plus = 0; m_minus = 0; }
         void clearCounters();

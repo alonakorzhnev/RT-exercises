@@ -30,10 +30,4 @@ void Tokenizer::tokenize(const string& line, vector<string>& tokens)
 
         found = line.find_first_of(m_delimeters, start);
     }
-
-    /*for(int i = 0; i < tokens.size(); ++i)
-    {
-        cout << tokens[i] << " ";
-    }
-    cout << endl;*/
 }
