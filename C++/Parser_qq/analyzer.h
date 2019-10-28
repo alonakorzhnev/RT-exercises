@@ -34,27 +34,26 @@ class Analyzer
         void clearPlusMinus() { m_plus = 0; m_minus = 0; }
         void clearCounters();
 
-        std::set<std::string> m_predTypes;
-        std::set<std::string> m_keyWords;
-        std::set<std::string> m_operators;
-        std::set<std::string> m_delimeters;
+        std::set<std::string>   m_predTypes;
+        std::set<std::string>   m_keyWords;
+        std::set<std::string>   m_operators;
+        std::set<std::string>   m_delimeters;
+        std::set<std::string>   m_varTable;
 
-        static std::string predTypes[];
-        static std::string keyWords[];
-        static std::string operators[];
-        static std::string delimeters[];
-
-        std::set<std::string> m_varTable;
+        static std::string      predTypes[];
+        static std::string      keyWords[];
+        static std::string      operators[];
+        static std::string      delimeters[];
 
         //counters
-        bool m_firstToken;
-        bool m_type;
-        int m_ifElse;
-        int m_plus;
-        int m_minus;
-        int m_round;     //()
-        int m_square;    //[]
-        int m_curly;     //{}  
+        bool        m_firstToken;
+        bool        m_type;
+        int         m_ifElse;
+        int         m_plus;
+        int         m_minus;
+        int         m_round;     //()
+        int         m_square;    //[]
+        int         m_curly;     //{}  
 
         Analyzer(const Analyzer& a);
         Analyzer& operator=(const Analyzer& a);

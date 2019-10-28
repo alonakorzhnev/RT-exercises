@@ -8,7 +8,7 @@ class Tokenizer
         ~Tokenizer() {}
         Tokenizer() {}
 
-        void tokenize(const std::string& line, std::queue<std::string>& tokens);
+        void tokenize(const std::string& line, std::queue<std::string>& tokens) const;
 
         static std::string& getDelimeters() { return m_delimeters; }
         static void setDelimeters(const std::string& del) { m_delimeters = del; } 
@@ -17,5 +17,5 @@ class Tokenizer
         Tokenizer(const Tokenizer& t);
         Tokenizer& operator=(const Tokenizer& t);
 
-        static std::string m_delimeters;
+        static std::string      m_delimeters;
 };

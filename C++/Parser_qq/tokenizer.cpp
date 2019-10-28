@@ -1,13 +1,12 @@
 #include "tokenizer.h"
 #include <sstream>
 #include <cctype>
-#include <iostream>
 
 using namespace std;
 
 string Tokenizer::m_delimeters = "()[]{};<>=+-*& \n\t\v\f\r";
 
-void Tokenizer::tokenize(const string& line, queue<string>& tokens)
+void Tokenizer::tokenize(const string& line, queue<string>& tokens) const
 {
     size_t start = 0;
     size_t found = line.find_first_of(m_delimeters);

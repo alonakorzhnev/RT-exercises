@@ -14,9 +14,9 @@ class Parser
         void parse(const char* fileName);
 
     private:
-        Tokenizer*       m_tokenizer;
-        Analyzer*        m_analyzer;
-        std::queue<std::string>   m_tokens;
+        Tokenizer*                  m_tokenizer;
+        Analyzer*                   m_analyzer;
+        std::queue<std::string>     m_tokens;
 
         Parser(const Parser& p);
         Parser& operator=(const Parser& p);
