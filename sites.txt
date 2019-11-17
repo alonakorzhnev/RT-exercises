@@ -1,3 +1,6 @@
 https://isocpp.org/wiki/faq/strange-inheritance#hiding-rule
 https://www.cquestions.com/2011/02/char-overflow-in-c.html
 https://stackoverflow.com/questions/4208004/how-do-unix-signals-work
+https://superuser.com/questions/121959/why-sometimes-windows-cannot-kill-a-process
+https://www.careercup.com/page
+https://github.com/dhara04/cracking-the-coding-interview-c--

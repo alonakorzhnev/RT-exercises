@@ -6,7 +6,7 @@
 int main()
 {
     key_t key = ftok("key", 65);
-    int shmid = shmget(key, sizeof(int), 0666|IPC_CREAT);
+    int shmid = shmget(key, (size_t)1024, 0666|IPC_CREAT);
     int* myint = (int*) shmat(shmid, (void*)0, 0);
 
     while(1)
