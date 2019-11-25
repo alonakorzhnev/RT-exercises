@@ -1,0 +1,1 @@
+cmd_/home/futurlena/Desktop/sqlink/Project/Message_queue/mq.o := ld -m elf_x86_64 -z max-page-size=0x200000   -r -o /home/futurlena/Desktop/sqlink/Project/Message_queue/mq.o /home/futurlena/Desktop/sqlink/Project/Message_queue/mq_main.o 
