@@ -26,7 +26,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    data = (char*)malloc(sizeof(char)*4096);
+    data = (char*)malloc(4096);
     ret = ioctl(fd, MQ_RECV_MSG, data);
     if(ret < 0)
     {

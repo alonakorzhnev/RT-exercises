@@ -31,8 +31,31 @@ rmmod:
 .PHONY: remod
 remod: rmmod insmod
 
-sent: sent.c
+send: send.c
 		gcc -pedantic -ansi -O2 -o $@ $< -g
 
 get: get.c
 		gcc -pedantic -ansi -O2 -o $@ $< -g
+
+test_threads: test_threads.c
+		gcc -pedantic -ansi -O2 -o $@ $< -g -pthread
+
+test1:
+	for number in $$(seq 1 100);\
+	do \
+	sudo insmod mq.ko;\
+	sleep 1 ;\
+	sudo chmod 666 /dev/mq*;\
+	sudo rmmod mq;\
+	(number=number+1);\
+	echo test iteration number $$number done;\
+	done
+
+test2:
+	for number in $$(seq 0 7);\
+	do \
+	./test_threads /dev/mq$$number;\
+	(number=number+1);\
+	echo test iteration dev/mq$$number done;\
+	sleep 1 ;\
+	done
