@@ -1,52 +1,60 @@
 #include "mq.h"
+#include <stdio.h>
+#include <pthread.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-#include <stdio.h> 
 #include <stdlib.h> 
 #include <unistd.h>
-#include <pthread.h>
 
-#define LOOP_COUNT 1000
-
+#define COUNT_OF_LOOPS 100
 char* device;
+
+pthread_mutex_t mutex_send;
+pthread_mutex_t mutex_recv;
+
+int count_send = 0;
+int count_recv = 0;
 
 void* send(void* arg)
 {
     int fd;
     int ret;
-    int i = (*(int*)arg);
     struct mq_reg message;
     char* m = "Hello";
-    
+
     fd = open(device, O_RDWR);
     if(fd == -1)
     {
         fprintf(stderr, "error file name\n");
-        return;
-    }    
+        return NULL;
+    }
 
     message.data = m;
     message.size = strlen(m);
-
+    
     ret = ioctl(fd, MQ_SEND_MSG, &message);
     if(ret < 0)
     {
         fprintf(stderr, "error send message\n");
-        return;
+        return NULL;
     }
     printf("Return value from send message %d\n", ret);
 
     if(close(fd) < 0)
     {
         fprintf(stderr, "error closing file\n");
-        return;        
+        return NULL;
     }
-   
-    return;
+
+    pthread_mutex_lock(&mutex_send);
+    count_send++;
+    pthread_mutex_unlock(&mutex_send);
+
+    return NULL;
 }
 
 void* recv(void* arg)
@@ -54,12 +62,12 @@ void* recv(void* arg)
     int fd;
     int ret;
     char* data;
-    
+
     fd = open(device, O_RDWR);
     if(fd == -1)
     {
         fprintf(stderr, "error file name\n");
-        return;
+        return NULL;
     }
 
     data = (char*)malloc(4096);
@@ -67,12 +75,12 @@ void* recv(void* arg)
     if(ret < 0)
     {
         fprintf(stderr, "error get message\n");
-        return;
+        return NULL;
     }
     if(ret == 0)
     {
         fprintf(stderr, "list is empty\n");
-        return;
+        return NULL;
     }
     printf("Return value from get message %d\n", ret);
     printf("Message: %s\n", data);
@@ -80,45 +88,43 @@ void* recv(void* arg)
     if(close(fd) < 0)
     {
         fprintf(stderr, "error closing file\n");
-        return;        
+        return NULL;
     }
 
-    free(data);      
-    return;
+    pthread_mutex_lock(&mutex_recv);
+    count_recv++;
+    pthread_mutex_unlock(&mutex_recv);
+
+    free(data);
+    return NULL;
 }
 
-int main(int argc, char** argv)
+int main(int argc, char **argv)
 {
-    int senders, receivers;
-    pthread_t arr_send[LOOP_COUNT];
-    pthread_t arr_recv[LOOP_COUNT];
-    int arr_send_id[LOOP_COUNT];
-    int arr_recv_id[LOOP_COUNT];
     int i, j;
+    pthread_t send_arr[COUNT_OF_LOOPS];
+    pthread_t recv_arr[COUNT_OF_LOOPS];
 
-    if(argc != 2)
+    if(argc == 2)
     {
-        return 1;
+	    device = argv[1];
     }
-    device = argv[1];
-
-    for(i = 0; i < LOOP_COUNT; ++i)
+    else 
     {
-        arr_send_id[i] = i;
-        arr_recv_id[i] = i;
+        device="/dev/mq0";
     }
     
-    for(i = 0; i < LOOP_COUNT; ++i)
+    for (i = 0; i < COUNT_OF_LOOPS; ++i)
     {
-        pthread_create(&arr_send[i], NULL, send, &arr_send_id[i]);
-        pthread_create(&arr_recv[i], NULL, recv, NULL);
+        pthread_create(&send_arr[i], NULL, send, NULL);
+        pthread_create(&recv_arr[i], NULL, recv, NULL);
+    }
+    for (j = 0; j < COUNT_OF_LOOPS; ++j)
+    {
+        pthread_join(send_arr[j], NULL);
+        pthread_join(recv_arr[j], NULL);
     }
 
-    for(j = 0; j < LOOP_COUNT; ++j)
-    {
-        pthread_join(arr_send[j], NULL);
-        pthread_join(arr_recv[j], NULL);
-    }
-
+    printf("Count send = %d, count recv = %d\n", count_send, count_recv);
     return 0;
 }
