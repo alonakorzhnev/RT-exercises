@@ -6,7 +6,7 @@
 #include <linux/printk.h> /*for pr_err*/
 
 MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Marianna");
+MODULE_AUTHOR("Alona Korzhnev");
 MODULE_DESCRIPTION("implementation for /dev/null");
 
 /* how many minors do we need ? */
