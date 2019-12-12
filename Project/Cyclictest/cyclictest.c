@@ -1,72 +1,82 @@
-#include <stdio.h>	// for fprintf(3), stderr:object, printf(3)
-#include <stdlib.h>	// for EXIT_SUCCESS, EXIT_FAILURE
-#include <time.h>	// for clock_gettime(2), clock_nanosleep(2), CLOCK_REALTIME, CLOCK_REALTIME
-#include <sched.h>	// for sched_setscheduler(2), struct sched_param
-#include <sys/mman.h>	// for mlockall(2)
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <sched.h>
+#include <sys/mman.h>
 #include <string.h>
-#include <unistd.h>
+#include <limits.h>
 
-/* The number of nsecs per sec. */
-const long long NSEC_PER_SEC=1000000000;
+const unsigned int nsec_per_sec = 1000000000;
 
-/*
- * Add a number of nanoseconds to a timespec
- */
-static inline void timespec_add_nanos(struct timespec* t, long long nanos_count) {
-	long long nsec=t->tv_nsec+nanos_count;
-	t->tv_nsec=nsec%NSEC_PER_SEC;
-	t->tv_sec+=nsec/NSEC_PER_SEC;
+void timespec_add_ns(struct timespec* t, unsigned long long ns){
+	unsigned long long nsec = t->tv_nsec + ns;
+	t->tv_nsec = nsec%nsec_per_sec;
+	t->tv_sec += nsec/nsec_per_sec;
 }
 
-/*
- * Return the diff in nanoseconds between x and y
- */
-static inline unsigned long long timespec_diff_nano(struct timespec* x, struct timespec* y) {
-	return (x->tv_sec-y->tv_sec)*NSEC_PER_SEC+(x->tv_nsec-y->tv_nsec);
+unsigned long long timespec_diff_ns(struct timespec* t1, struct timespec* t2){
+	struct timespec diff;
+	diff.tv_sec = t1->tv_sec - t2->tv_sec;
+	diff.tv_nsec = t1->tv_nsec - t2->tv_nsec;	
+	return diff.tv_sec*nsec_per_sec + diff.tv_nsec;
 }
 
-int main(int argc, char** argv, char** envp) {
-	if(argc != 4) {
+void ERR(int errcode, const char* msg){
+	if(errcode != 0){
+		perror(NULL);
+		fprintf(stderr, "%s\n", msg);
+		exit(1);
+	}
+}
+
+int main(int argc, char** argv, char** envp){
+	if(argc != 4){
 		return EXIT_FAILURE;
 	}
 
+	// get arguments
 	const unsigned long long interval = atoi(argv[1]);
 	const int priority = atoi(argv[2]);
-	const unsigned int loop = atoi(argv[3]);
+	const unsigned int count_iter = atoi(argv[3]);
 
+	// set priority and scheduling policy
 	struct sched_param param;
-	param.sched_priority=priority;
-	sched_setscheduler(0, SCHED_FIFO, &param);
-	/* Lock memory */
-	mlockall(MCL_CURRENT|MCL_FUTURE);
+	param.sched_priority = priority;
+	ERR(sched_setscheduler(0, SCHED_FIFO, &param), "sched_setscheduler");
 
+	// lock memory from page faults
+	ERR(mlockall(MCL_CURRENT|MCL_FUTURE), "mlockall");
+
+	// get current time
 	struct timespec start_time;
-	clock_gettime(CLOCK_REALTIME, &start_time);
-	timespec_add_nanos(&start_time, interval);
+	ERR(clock_gettime(CLOCK_REALTIME, &start_time), "clock_gettime");
+	timespec_add_ns(&start_time, interval);
 
-	unsigned long long max = 0;
-	unsigned long long min = 1024*1024*1024*1024LL;
-	unsigned long long sum = 0;
+	unsigned long long time_max = 0;
+	unsigned long long time_min = ULLONG_MAX;
+	unsigned long long time_sum = 0;
+	unsigned long long time_difference = 0;
 
-	for(unsigned int i = 0; i < loop; i++) {
-		clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &start_time, NULL);
+	for(unsigned int i = 0; i < count_iter; ++i){
+		ERR(clock_nanosleep(CLOCK_REALTIME, TIMER_ABSTIME, &start_time, NULL), "clock_nanosleep");
 		struct timespec current_time;
-		clock_gettime(CLOCK_REALTIME, &current_time);
-		unsigned long long diff_nanos = timespec_diff_nano(&current_time, &start_time);
-		if(diff_nanos > max) {
-			max = diff_nanos;
+		ERR(clock_gettime(CLOCK_REALTIME, &current_time), "clock_gettime");
+
+		time_difference = timespec_diff_ns(&current_time, &start_time);		
+		if(time_difference > time_max){
+			time_max = time_difference;
 		}
-		if(diff_nanos < min) {
-			min = diff_nanos;
+		if(time_difference < time_min){
+			time_min = time_difference;
 		}
-		sum += diff_nanos;
-		while(1){}
-		timespec_add_nanos(&start_time, interval);
+		time_sum += time_difference;
+
+		timespec_add_ns(&start_time, interval);
 	}
 
-	printf("max is %llu\n", max);
-	printf("min is %llu\n", min);
-	printf("avg is %llu\n", sum/loop);
+	printf("time max: %llu\n", time_max);
+	printf("time min: %llu\n", time_min);
+	printf("time avg: %llu\n", time_sum/count_iter);
 
 	return EXIT_SUCCESS;
 }
